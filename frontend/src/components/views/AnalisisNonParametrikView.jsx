@@ -1,19 +1,30 @@
-// views/AnalisisNonParametrikView.jsx
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
+import React from 'react';
+import { Card, CardContent, Grid, Box } from '@mui/material';
 
-export default function AnalisisNonParametrikView() {
+const AnalisisNonparametrikView = () => {
   return (
-    <Box sx={{ px: { xs: 4, md: 10 } }}>
-      <Typography component="h2" variant="h4" sx={{ mb: 2, mt: 2 }}>
-        Analisis Non Parametrik
-      </Typography>
-      <Divider sx={{ mb: 2 }} />
-      <Typography>
-        Konten untuk analisis non-parametrik akan ditampilkan di sini.
-      </Typography>
+    <Box>
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <Card>
+            {/* Hapus padding dari CardContent agar iframe menempel sempurna */}
+            <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
+              <iframe
+                src="http://127.0.0.1:3838" // Pastikan URL ini sesuai dengan app Shiny Anda
+                title="Analisis Nonparametrik - R Shiny"
+                style={{
+                  width: '85vw',
+                  height: '85vh', // Tinggi bisa disesuaikan (85% dari tinggi viewport)
+                  border: 'none',
+                  display: 'block', // Untuk menghilangkan space di bawah iframe
+                }}
+              />
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
     </Box>
   );
-}
+};
+
+export default AnalisisNonparametrikView;

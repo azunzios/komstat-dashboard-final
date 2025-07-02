@@ -11,6 +11,7 @@ import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
 import SideMenuMobile from './SideMenuMobile';
 import MenuButton from './MenuButton';
 import ColorModeIconDropdown from '.././theme/ColorModeIconDropdown';
+import Divider from '@mui/material/Divider';
 
 const Toolbar = styled(MuiToolbar)({
   width: '100%',
@@ -75,6 +76,7 @@ export default function AppNavbar() {
           <SideMenuMobile open={open} toggleDrawer={toggleDrawer} />
         </Stack>
       </Toolbar>
+      <Divider />
     </AppBar>
   );
 }

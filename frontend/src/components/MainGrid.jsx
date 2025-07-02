@@ -6,9 +6,6 @@ import Fab from '@mui/material/Fab';
 import Zoom from '@mui/material/Zoom';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Copyright from '../internals/components/Copyright';
-import PrintLayout from './PrintLayout.jsx'; // Untuk mencetak semua halaman
-
-// Impor semua komponen view
 import HomeView from './views/HomeView.jsx';
 import TahunAreaView from './views/TahunAreaView.jsx';
 import AreaTahunTipeGasView from './views/AreaTahunTipeGasView.jsx';
@@ -16,10 +13,7 @@ import TahunTipeGasView from './views/TahunTipeGasView.jsx';
 import TabelDataView from './views/TabelDataView.jsx';
 import AnalisisNonParametrikView from './views/AnalisisNonParametrikView.jsx';
 import InformasiPenggunaanView from './views/InformasiPenggunaanView.jsx';
-// import AboutView from './views/AboutView.jsx';
-// import FeedbackView from './views/FeedbackView.jsx';
 
-// Konstanta
 const DEFAULT_COUNTRY = 'World';
 const DEFAULT_YEAR_RANGE = [2013, 2023];
 const GAS_KEYS = [
@@ -127,22 +121,12 @@ export default function MainGrid() {
     // <FeedbackView />,
   ];
 
-  // Kumpulkan semua props yang dibutuhkan oleh PrintLayout
-  const printLayoutProps = {
-    stats, loading, error, country, setCountry, yearRange, setYearRange,
-    setStats, countryCode, gasKeys: GAS_KEYS
-  };
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box id="dashboard-print-wrapper" sx={{ width: '100%'}}>
       {/* Konten yang terlihat oleh pengguna */}
       <Box>
         {components[activeComponentIndex]}
-      </Box>
-
-      {/* Konten TERSEMBUNYI yang khusus untuk dicetak */}
-      <Box sx={{ display: 'none' }}>
-        <PrintLayout ref={printComponentRef} {...printLayoutProps} />
       </Box>
 
       {/* Bagian Footer dan Tombol Scroll */}

@@ -172,66 +172,52 @@ export default function TahunAreaView({ stats, loading, error, country, setCount
           <Typography component="h2" variant="h4">
             Gambaran Umum GHGE berdasarkan Tahun dan Area
           </Typography>
-          {!isPrintMode && (
-            <Button
-              variant="outlined"
-              startIcon={<PrintIcon />}
-              onClick={handlePrintRequest}
-            >
-              Cetak Laporan
-            </Button>
-          )}
         </Box>
         <Divider />
 
-        {!isPrintMode && (
-          <>
-            <Box id="form-section" sx={{ my: 4, p: 3, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 1 }}>
-              <Typography component="h2" variant="h6">Tambah/Update Data (Simulasi)</Typography>
-              <Typography sx={{ mb: 2 }}>Lihat perubahan yang akan terjadi jika data diubah atau ditambahkan.</Typography>
-              <form onSubmit={handleSubmit}>
-                <Grid container spacing={3} columns={14}>
-                  <Grid item size={{ xs: 14, md: 3 }}>
-                    <TextField fullWidth select name="country" label="Pilih Kode Negara" value={formData.country} onChange={handleInputChange} variant="filled" disabled={isFormLoading} SelectProps={{ native: true }} InputLabelProps={{ shrink: true }}>
-                      {countries.map((c) => (<option key={c.code} value={c.code}>{c.name} ({c.code})</option>))}
-                    </TextField>
-                  </Grid>
-                  <Grid item size={{ xs: 14, md: 3 }}>
-                    <TextField fullWidth select name="year" label="Pilih Tahun" value={formData.year} onChange={handleInputChange} variant="filled" disabled={isFormLoading} SelectProps={{ native: true }} InputLabelProps={{ shrink: true }}>
-                      {years.map((y) => (<option key={y} value={y}>{y}</option>))}
-                    </TextField>
-                  </Grid>
-                  <Grid item size={{ xs: 14, md: 3 }}>
-                    <TextField fullWidth select name="gasType" label="Tipe Gas" value={formData.gasType} onChange={handleInputChange} variant="filled" disabled={isFormLoading} SelectProps={{ native: true }} InputLabelProps={{ shrink: true }}>
-                      {gasTypes.map((g) => (<option key={g.code} value={g.code}>{g.label}</option>))}
-                    </TextField>
-                  </Grid>
-                  <Grid item size={{ xs: 14, md: 3 }}>
-                    <TextField variant="filled" label="Nilai" fullWidth value={formData.value} onChange={(e) => {
-                      const val = e.target.value.replace(',', '.');
-                      if (/^[0-9]*[.]?[0-9]*$/.test(val) || val === '') {
-                        setFormData(prev => ({ ...prev, value: val }));
-                      }
-                    }} inputMode="decimal" disabled={isFormLoading} InputProps={{ endAdornment: <InputAdornment position="end">MtCO2</InputAdornment> }} />
-                  </Grid>
-                  <Grid item size={{ xs: 12, md: 2 }}>
-                    <Button type="submit" variant="contained" color="primary" fullWidth disabled={isFormLoading}>Tambah</Button>
-                  </Grid>
-                </Grid>
-              </form>
-              <Typography sx={{ mt: 2, fontStyle: 'italic', color: 'text.secondary' }}>*Perubahan hanya bersifat sementara.</Typography>
-            </Box>
+        <Box id="form-section" sx={{ my: 4, p: 3, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 1 }}>
+          <Typography component="h2" variant="h6">Tambah/Update Data (Simulasi)</Typography>
+          <Typography sx={{ mb: 2 }}>Lihat perubahan yang akan terjadi jika data diubah atau ditambahkan.</Typography>
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={3} columns={12}>
+              <Grid item size={{ xs: 12, md: 3 }}>
+                <TextField fullWidth select name="country" label="Pilih Kode Negara" value={formData.country} onChange={handleInputChange} variant="filled" disabled={isFormLoading} SelectProps={{ native: true }} InputLabelProps={{ shrink: true }}>
+                  {countries.map((c) => (<option key={c.code} value={c.code}>{c.name} ({c.code})</option>))}
+                </TextField>
+              </Grid>
+              <Grid item size={{ xs: 14, md: 3 }}>
+                <TextField fullWidth select name="year" label="Pilih Tahun" value={formData.year} onChange={handleInputChange} variant="filled" disabled={isFormLoading} SelectProps={{ native: true }} InputLabelProps={{ shrink: true }}>
+                  {years.map((y) => (<option key={y} value={y}>{y}</option>))}
+                </TextField>
+              </Grid>
+              <Grid item size={{ xs: 14, md: 3 }}>
+                <TextField fullWidth select name="gasType" label="Tipe Gas" value={formData.gasType} onChange={handleInputChange} variant="filled" disabled={isFormLoading} SelectProps={{ native: true }} InputLabelProps={{ shrink: true }}>
+                  {gasTypes.map((g) => (<option key={g.code} value={g.code}>{g.label}</option>))}
+                </TextField>
+              </Grid>
+              <Grid item size={{ xs: 14, md: 3 }}>
+                <TextField variant="filled" label="Nilai" fullWidth value={formData.value} onChange={(e) => {
+                  const val = e.target.value.replace(',', '.');
+                  if (/^[0-9]*[.]?[0-9]*$/.test(val) || val === '') {
+                    setFormData(prev => ({ ...prev, value: val }));
+                  }
+                }} inputMode="decimal" disabled={isFormLoading} InputProps={{ endAdornment: <InputAdornment position="end">MtCO2</InputAdornment> }} />
+              </Grid>
+              <Grid item size={{ xs: 12, md: 2 }}>
+                <Button type="submit" variant="contained" color="primary" fullWidth disabled={isFormLoading}>Tambah</Button>
+              </Grid>
+            </Grid>
+          </form>
+          <Typography sx={{ mt: 2, fontStyle: 'italic', color: 'text.secondary' }}>*Perubahan hanya bersifat sementara.</Typography>
+        </Box>
+        <Box id="filter-section">
+          <CountryYearFilter
+            onCountryChange={val => val && setCountry(val)}
+            onYearChange={range => setYearRange(range)}
+          />
+        </Box>
 
-            <Box id="filter-section">
-              <CountryYearFilter
-                onCountryChange={val => val && setCountry(val)}
-                onYearChange={range => setYearRange(range)}
-              />
-            </Box>
-          </>
-        )}
-
-        <Grid id="statistik-section" container spacing={2} columns={15} sx={{ mt: 2, mb: 2 }}>
+        <Grid id="statistik-section" container spacing={2} columns={12} sx={{ mt: 2, mb: 2 }}>
           {loading ? (
             gasKeys.map((_, index) => (
               <Grid key={index} item xs={15} lg={3}>
@@ -239,17 +225,17 @@ export default function TahunAreaView({ stats, loading, error, country, setCount
               </Grid>
             ))
           ) : error ? (
-            <Grid item xs={12}>
+            <Grid item xs={15}>
               <Typography color="error">{error}</Typography>
             </Grid>
           ) : (
             statCards.map((card, index) => (
-              <Grid key={index} item size={{ xs: 15, lg: 3 }}>
+              <Grid key={index} item size={{ xs: 12, lg: 3 }}>
                 <StatCard {...card} />
               </Grid>
             ))
           )}
-          <Grid item size={{ xs: 15, md: 7.5 }}>
+          <Grid item size={{ xs: 12, md: 12 }}>
             <SessionsChart
               statsData={stats}
               loading={loading}
@@ -257,7 +243,7 @@ export default function TahunAreaView({ stats, loading, error, country, setCount
               yearRange={yearRange}
             />
           </Grid>
-          <Grid item size={{ xs: 15, md: 7.5 }}>
+          <Grid item size={{ xs: 12, md: 12 }}>
             <PageViewsBarChart yearRange={yearRange} countryCode={countryCode} />
           </Grid>
         </Grid>

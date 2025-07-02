@@ -54,7 +54,7 @@ export default function SideMenu() {
         }}
       >
         <MenuContent />
-        <Box sx={{p:2}}>
+        <Box sx={{p:'12px'}}>
         <HighlightedCard />
         </Box>
         <CardAlert />

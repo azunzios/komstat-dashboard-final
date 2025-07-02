@@ -7,23 +7,23 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import { printDashboardToPDF } from '../utils/print';
 
 // Komponen ini TIDAK PERLU menerima prop onPrint
 export default function HighlightedCard() {
   const handlePrintRequest = () => {
-    // Kirim event global bernama 'print:request'
-    window.dispatchEvent(new CustomEvent('print:request'));
+    printDashboardToPDF();
   };
 
   return (
-    <Card sx={{ height: '100%' }}>
+    <Card sx={{ height: '100%', p: 2, width: '100%'}}>
       <CardContent>
         <PictureAsPdfIcon />
         <Typography component="h2" variant="subtitle2" gutterBottom sx={{ fontWeight: '600' }}>
-          Cetak Laporan Lengkap
+          Cetak Output
         </Typography>
         <Typography sx={{ color: 'text.secondary', mb: '8px' }}>
-          Cetak semua data dari semua halaman dalam satu file PDF.
+          Cetak output data dalam format PDF (seperti Ctrl+P)
         </Typography>
         <Button
           variant="contained"
@@ -32,7 +32,7 @@ export default function HighlightedCard() {
           endIcon={<ChevronRightRoundedIcon />}
           onClick={handlePrintRequest} // Panggil fungsi yang mengirim event
         >
-          Export Laporan PDF
+          Export PDF
         </Button>
       </CardContent>
     </Card>

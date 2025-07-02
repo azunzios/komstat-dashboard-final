@@ -6,6 +6,12 @@ import Typography from '@mui/material/Typography';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 
 export default function CardAlert() {
+  const handleMenuClick = (index: number) => {
+    const menuEvent = new CustomEvent('mainmenu:select', {
+      detail: { menuIndex: index }
+    });
+    window.dispatchEvent(menuEvent);
+  };
   return (
     <Card variant="outlined" sx={{ m: 1.5, flexShrink: 0 }}>
       <CardContent>
@@ -16,7 +22,7 @@ export default function CardAlert() {
         <Typography variant="body2" sx={{ mb: 2, color: 'text.secondary' }}>
           Analisis Non Parametrik adalah alat analisis data yang tidak menggunakan asumsi tentang distribusi data.
         </Typography>
-        <Button variant="contained" size="small" fullWidth>
+        <Button variant="contained" size="small" fullWidth onClick={() => handleMenuClick(5)}>
           Lihat
         </Button>
       </CardContent>
