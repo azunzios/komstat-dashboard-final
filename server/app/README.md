@@ -23,7 +23,7 @@ app/
 
 ### 1. Modularization
 - **Statistical Tests**: All test functions moved to `utils/stat_tests.R`
-- **CSV Handling**: File processing moved to `utils/csv_utils.R`
+- **Data Import**: File processing moved to `utils/csv_utils.R` (now supports CSV, Excel, and SPSS formats)
 - **Emission Data Processing**: Emission-related utilities in `utils/emission_utils.R`
 - **Notifications**: Consistent notification system in `utils/notification_helpers.R`
 - **Plotting**: All plotting logic moved to `utils/plot_utils.R`

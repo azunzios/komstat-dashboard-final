@@ -28,6 +28,14 @@ After thorough examination of the original `app.R` and the new modular version, 
   - Code was hardcoded to use `data$'Country Name'` which failed for CO2 and TOTAL
 - **Impact**: Algeria and other countries could not be found in CO2 and TOTAL datasets, causing "Negara tidak ditemukan: Algeria" errors
 - **Fix Applied**: Updated all emission utility functions to handle both naming conventions:
+
+#### 5. **Multi-format File Upload Support** - ADDED ✅
+- **Problem**: App only supported CSV file uploads
+- **Impact**: Users with data in Excel or SPSS format had to convert files before using the app
+- **Fix Applied**: 
+  - Added support for Excel (.xlsx, .xls) and SPSS (.sav) file formats
+  - Implemented dedicated file reading functions with consistent validation logic
+  - Updated UI to accept these file formats and provide appropriate feedback
   - `get_available_countries()`
   - `get_available_years_for_country()`
   - `get_country_emission_data()`

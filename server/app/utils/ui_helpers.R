@@ -45,24 +45,32 @@ create_test_selection <- function(input_id, selected = "sign") {
 #' Create file upload section
 #' @param file_input_id File input ID
 #' @param clear_button_id Clear button ID
+#' @param download_button_id Download button ID
 #' @param file_status_output_id File status output ID (namespaced)
 #' @return Div containing file upload UI
-create_file_upload_section <- function(file_input_id, clear_button_id, file_status_output_id) {
+create_file_upload_section <- function(file_input_id, clear_button_id, download_button_id, file_status_output_id) {
     div(
-        h5("📁 Upload File CSV:"),
-        fileInput(file_input_id, NULL, accept = ".csv"),
+        h5("📁 Upload File Data:"),
+        
+        fileInput(file_input_id, NULL, 
+                accept = c(".csv", ".xls", ".xlsx", ".sav"),
+                buttonLabel = "Browse..."),
 
         # Buttons for file management
-        fluidRow(
-            column(
-                12,
+        div(class = "row",
+            div(class = "col-12 col-md-6 mb-2 px-2",
+                downloadButton(download_button_id, "Download Template CSV",
+                    class = "btn btn-success btn-sm w-100 text-truncate"
+                )
+            ),
+            div(class = "col-12 col-md-6 mb-2 px-2",
                 actionButton(clear_button_id, "🗑️ Clear File",
-                    class = "btn btn-warning btn-sm"
+                    class = "btn btn-warning btn-sm w-100"
                 )
             )
         ),
-
-        helpText("Format: 2 kolom data numerik, minimal 5 baris"),
+        
+        helpText("Format: File CSV, Excel (.xlsx/.xls), atau SPSS (.sav) dengan 2 kolom data numerik dan 5 baris"),
         br()
     )
 }
@@ -101,7 +109,7 @@ create_manual_input_section <- function(use_manual_id, sample1_id, sample2_id, t
 <b>H0:</b> Tidak ada perbedaan median antara dua kondisi (median perbedaan = 0).<br/>
 <b>H1:</b> Ada perbedaan median antara dua kondisi (median perbedaan ≠ 0).<br/>
 Digunakan untuk data ordinal atau interval yang tidak berdistribusi normal.",
-                "warning-box"
+                "note-box"
             )
         ),
         conditionalPanel(
@@ -113,7 +121,7 @@ Digunakan untuk data ordinal atau interval yang tidak berdistribusi normal.",
 <b>H0:</b> Distribusi perbedaan berpusat di nol (tidak ada perbedaan).<br/>
 <b>H1:</b> Distribusi perbedaan tidak berpusat di nol (ada perbedaan).<br/>
 Lebih sensitif daripada Uji Tanda karena memperhitungkan ranking perbedaan.",
-                "warning-box"
+                "note-box"
             )
         ),
         conditionalPanel(
@@ -137,7 +145,7 @@ Digunakan untuk mendeteksi pola non-random pada data berurutan.",
 <b>H0:</b> Distribusi/median kedua kelompok sama.<br/>
 <b>H1:</b> Distribusi/median kedua kelompok berbeda.<br/>
 Alternatif nonparametrik dari uji t dua sampel independen.",
-                "warning-box"
+                "note-box"
             )
         ),
         br(), br()

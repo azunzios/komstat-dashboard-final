@@ -1,5 +1,5 @@
 # Statistical Test Functions
-# Functions untuk uji statistik non-parametrik
+# Functions untuk uji statistik nonparametrik
 
 #' Perform Sign Test
 #' @param sample1 First sample (numeric vector)

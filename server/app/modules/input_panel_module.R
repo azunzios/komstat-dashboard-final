@@ -39,6 +39,7 @@ input_panel_ui <- function(id) {
             create_file_upload_section(
                 ns("file_csv"),
                 ns("clear_file"),
+                ns("download_template"),
                 ns("file_status")
             )
         ),
@@ -339,6 +340,61 @@ input_panel_server <- function(id, parent_session) {
             show_manual_mode_notification()
         })
 
+        # Download template handlers
+        output$download_template <- downloadHandler(
+            filename = function() {
+                paste0("template-uji-nonparametrik-", Sys.Date(), ".csv")
+            },
+            content = function(file) {
+                template_lines <- generate_csv_template()
+                writeLines(template_lines, file)
+            }
+        )
+        
+        # Excel template download
+        output$download_excel_template <- downloadHandler(
+            filename = function() {
+                paste0("template-uji-nonparametrik-", Sys.Date(), ".xlsx")
+            },
+            content = function(file) {
+                # Check required packages
+                if (!check_and_load_packages(c("readxl", "writexl"))) {
+                    stop("Gagal memuat packages readxl dan writexl yang diperlukan")
+                }
+                
+                # Create a data frame with the template data
+                template_df <- data.frame(
+                    Sebelum = c(78, 82, 85, 79, 88, 76, 84, 87, 81, 89),
+                    Sesudah = c(75, 79, 82, 76, 85, 73, 81, 84, 78, 86)
+                )
+                
+                # Write the data frame to the file
+                writexl::write_xlsx(template_df, file)
+            }
+        )
+        
+        # SPSS template download
+        output$download_spss_template <- downloadHandler(
+            filename = function() {
+                paste0("template-uji-nonparametrik-", Sys.Date(), ".sav")
+            },
+            content = function(file) {
+                # Check required packages
+                if (!check_and_load_packages("haven")) {
+                    stop("Gagal memuat package haven yang diperlukan")
+                }
+                
+                # Create a data frame with the template data
+                template_df <- data.frame(
+                    Sebelum = c(78, 82, 85, 79, 88, 76, 84, 87, 81, 89),
+                    Sesudah = c(75, 79, 82, 76, 85, 73, 81, 84, 78, 86)
+                )
+                
+                # Write the data frame to the file
+                haven::write_sav(template_df, file)
+            }
+        )
+
         # Get data reactive
         get_data <- reactive({
             # Priority 1: Emission data
@@ -356,16 +412,21 @@ input_panel_server <- function(id, parent_session) {
             if (use_csv) {
                 tryCatch(
                     {
-                        csv_result <- read_csv_robust(input$file_csv$datapath)
-                        show_csv_success_notification(csv_result$n)
+                        # Get the file extension to determine which reader to use
+                        file_path <- input$file_csv$datapath
+                        file_data <- read_data_file(file_path)
+                        
+                        file_source <- file_data$source
+                        show_success_notification(paste("File", file_source, "berhasil dibaca:"), file_data$n)
+                        
                         return(list(
-                            sample1 = csv_result$sample1,
-                            sample2 = csv_result$sample2,
-                            source = "CSV"
+                            sample1 = file_data$sample1,
+                            sample2 = file_data$sample2,
+                            source = file_source
                         ))
                     },
                     error = function(e) {
-                        show_error_notification(paste("Error CSV:", e$message))
+                        show_error_notification(paste("Error membaca file:", e$message))
                         return(NULL)
                     }
                 )
