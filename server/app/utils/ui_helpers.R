@@ -33,10 +33,10 @@ get_info_box_style <- function(style_class) {
 create_test_selection <- function(input_id, selected = "sign") {
     radioButtons(input_id, "Pilih Jenis Uji:",
         choices = list(
-            "Uji Sign" = "sign",
-            "Uji Wilcoxon" = "wilcoxon",
-            "Uji Run" = "run",
-            "Uji Mann Whitney U" = "mannwhitney"
+            "Uji Tanda (Sign Test)" = "sign",
+            "Uji Wilcoxon Signed-Rank" = "wilcoxon",
+            "Uji Runs (Runs Test)" = "run",
+            "Uji Mann-Whitney U" = "mannwhitney"
         ),
         selected = selected
     )
@@ -45,10 +45,9 @@ create_test_selection <- function(input_id, selected = "sign") {
 #' Create file upload section
 #' @param file_input_id File input ID
 #' @param clear_button_id Clear button ID
-#' @param download_button_id Download button ID
 #' @param file_status_output_id File status output ID (namespaced)
 #' @return Div containing file upload UI
-create_file_upload_section <- function(file_input_id, clear_button_id, download_button_id, file_status_output_id) {
+create_file_upload_section <- function(file_input_id, clear_button_id, file_status_output_id) {
     div(
         h5("📁 Upload File CSV:"),
         fileInput(file_input_id, NULL, accept = ".csv"),
@@ -56,13 +55,7 @@ create_file_upload_section <- function(file_input_id, clear_button_id, download_
         # Buttons for file management
         fluidRow(
             column(
-                6,
-                downloadButton(download_button_id, "Download Template",
-                    class = "btn btn-success btn-sm"
-                )
-            ),
-            column(
-                6,
+                12,
                 actionButton(clear_button_id, "🗑️ Clear File",
                     class = "btn btn-warning btn-sm"
                 )
@@ -78,10 +71,9 @@ create_file_upload_section <- function(file_input_id, clear_button_id, download_
 #' @param use_manual_id Use manual button ID
 #' @param sample1_id Sample 1 input ID
 #' @param sample2_id Sample 2 input ID
-#' @param load_template_id Load template button ID
 #' @param test_type_input_id Test type input ID (namespaced)
 #' @return Div containing manual input UI
-create_manual_input_section <- function(use_manual_id, sample1_id, sample2_id, load_template_id, test_type_input_id) {
+create_manual_input_section <- function(use_manual_id, sample1_id, sample2_id, test_type_input_id) {
     div(
         h5("✏️ Atau Input Manual:"),
 
@@ -101,25 +93,52 @@ create_manual_input_section <- function(use_manual_id, sample1_id, sample2_id, l
 
         # Conditional notes for different test types
         conditionalPanel(
-            condition = paste0("input['", test_type_input_id, "'] == 'mannwhitney'"),
+            condition = paste0("input['", test_type_input_id, "'] == 'sign'"),
             create_info_box(
-                "📝", "Catatan Mann Whitney U",
-                "Sampel 1 dan Sampel 2 adalah dua kelompok <em>independen</em> (bukan berpasangan).<br/>
-        Uji ini membandingkan distribusi/median kedua kelompok.",
+                "📝", "Catatan Uji Tanda (Sign Test)",
+                "<b>Tujuan:</b> Menguji apakah terdapat perbedaan median antara dua pengukuran berpasangan.<br/>
+<b>Jenis Sampel:</b> Berpasangan (dependen).<br/>
+<b>H0:</b> Tidak ada perbedaan median antara dua kondisi (median perbedaan = 0).<br/>
+<b>H1:</b> Ada perbedaan median antara dua kondisi (median perbedaan ≠ 0).<br/>
+Digunakan untuk data ordinal atau interval yang tidak berdistribusi normal.",
+                "warning-box"
+            )
+        ),
+        conditionalPanel(
+            condition = paste0("input['", test_type_input_id, "'] == 'wilcoxon'"),
+            create_info_box(
+                "📝", "Catatan Wilcoxon Signed-Rank",
+                "<b>Tujuan:</b> Menguji perbedaan median antara dua pengukuran berpasangan dengan memperhitungkan besar dan arah perbedaan.<br/>
+<b>Jenis Sampel:</b> Berpasangan (dependen).<br/>
+<b>H0:</b> Distribusi perbedaan berpusat di nol (tidak ada perbedaan).<br/>
+<b>H1:</b> Distribusi perbedaan tidak berpusat di nol (ada perbedaan).<br/>
+Lebih sensitif daripada Uji Tanda karena memperhitungkan ranking perbedaan.",
                 "warning-box"
             )
         ),
         conditionalPanel(
             condition = paste0("input['", test_type_input_id, "'] == 'run'"),
             create_info_box(
-                "📝", "Catatan Run Test",
-                "Uji Run menguji randomness urutan perbedaan (Sampel1 - Sampel2).<br/>
-        H0: Urutan perbedaan bersifat random.",
+                "📝", "Catatan Runs (Runs Test)",
+                "<b>Tujuan:</b> Menguji apakah urutan data (misal: tanda perbedaan) bersifat random.<br/>
+<b>Jenis Sampel:</b> Berpasangan (dependen).<br/>
+<b>H0:</b> Urutan perbedaan bersifat random.<br/>
+<b>H1:</b> Urutan perbedaan tidak random.<br/>
+Digunakan untuk mendeteksi pola non-random pada data berurutan.",
                 "note-box"
             )
         ),
-        actionButton(load_template_id, "📋 Gunakan Template",
-            class = "btn btn-secondary btn-sm"
+        conditionalPanel(
+            condition = paste0("input['", test_type_input_id, "'] == 'mannwhitney'"),
+            create_info_box(
+                "📝", "Catatan Mann-Whitney U",
+                "<b>Tujuan:</b> Menguji apakah dua kelompok independen memiliki distribusi/median yang sama.<br/>
+<b>Jenis Sampel:</b> Dua kelompok independen.<br/>
+<b>H0:</b> Distribusi/median kedua kelompok sama.<br/>
+<b>H1:</b> Distribusi/median kedua kelompok berbeda.<br/>
+Alternatif nonparametrik dari uji t dua sampel independen.",
+                "warning-box"
+            )
         ),
         br(), br()
     )

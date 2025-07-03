@@ -39,7 +39,6 @@ input_panel_ui <- function(id) {
             create_file_upload_section(
                 ns("file_csv"),
                 ns("clear_file"),
-                ns("download_template"),
                 ns("file_status")
             )
         ),
@@ -61,7 +60,6 @@ input_panel_ui <- function(id) {
                 ns("use_manual"),
                 ns("sample1"),
                 ns("sample2"),
-                ns("load_template"),
                 ns("test_type")
             )
         ),
@@ -340,31 +338,6 @@ input_panel_server <- function(id, parent_session) {
             values$force_manual <- TRUE
             show_manual_mode_notification()
         })
-
-        # Load template data
-        observeEvent(input$load_template, {
-            if (input$test_type == "mannwhitney") {
-                # Template untuk Mann Whitney U (dua kelompok independen)
-                updateTextInput(session, "sample1", value = "78,82,85,79,88,76,84,87,81,89")
-                updateTextInput(session, "sample2", value = "72,75,80,74,83,70,77,82,76,85")
-            } else {
-                # Template untuk uji berpasangan (Sign, Wilcoxon, Run)
-                updateTextInput(session, "sample1", value = "78,82,85,79,88,76,84,87,81,89")
-                updateTextInput(session, "sample2", value = "75,79,82,76,85,73,81,84,78,86")
-            }
-            values$force_manual <- TRUE
-        })
-
-        # Download template handler
-        output$download_template <- downloadHandler(
-            filename = function() {
-                paste0("template-uji-nonparametrik-", Sys.Date(), ".csv")
-            },
-            content = function(file) {
-                template_lines <- generate_csv_template()
-                writeLines(template_lines, file)
-            }
-        )
 
         # Get data reactive
         get_data <- reactive({
