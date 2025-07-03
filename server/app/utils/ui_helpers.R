@@ -69,11 +69,6 @@ create_file_upload_section <- function(file_input_id, clear_button_id, download_
             )
         ),
 
-        # File status
-        conditionalPanel(
-            condition = paste0("output['", file_status_output_id, "'] != ''"),
-            create_info_box("📄", "File aktif", textOutput(file_status_output_id, inline = TRUE))
-        ),
         helpText("Format: 2 kolom data numerik, minimal 5 baris"),
         br()
     )
@@ -127,6 +122,115 @@ create_manual_input_section <- function(use_manual_id, sample1_id, sample2_id, l
             class = "btn btn-secondary btn-sm"
         ),
         br(), br()
+    )
+}
+
+#' Create emission data selection section
+#' @param data_type_id ID for data type selection
+#' @param analysis_type_id ID for analysis type selection
+#' @param country1_id ID for first country selection
+#' @param country2_id ID for second country selection
+#' @param year1_id ID for year1 selection (for year comparison)
+#' @param year2_id ID for year2 selection (for year comparison)
+#' @param use_emission_id ID for use emission data checkbox
+#' @return Div containing emission data selection UI
+create_emission_data_section <- function(data_type_id, analysis_type_id, country1_id, country2_id, year1_id, year2_id, use_emission_id) {
+    div(
+        h6("🌍 Data Emisi Gas Rumah Kaca", style = "color: #28a745; font-weight: bold;"),
+        
+        checkboxInput(use_emission_id, "Gunakan Data Emisi", value = FALSE),
+        
+        conditionalPanel(
+            condition = paste0("input['", use_emission_id, "']"),
+            
+            # Data type selection
+            selectizeInput(data_type_id, "Jenis Data Emisi:",
+                choices = list(
+                    "Nilai emisi CH4" = "CH4",
+                    "Nilai emisi CO2" = "CO2", 
+                    "Nilai emisi N2O" = "N2O",
+                    "Nilai total emisi gas rumah kaca" = "TOTAL"
+                ),
+                selected = NULL,
+                options = list(
+                    placeholder = "Pilih jenis data...",
+                    onInitialize = I('function() { this.setValue(""); }')
+                )
+            ),
+            
+            # Analysis type selection
+            conditionalPanel(
+                condition = paste0("input['", data_type_id, "'] != ''"),
+                radioButtons(analysis_type_id, "Jenis Analisis:",
+                    choices = list(
+                        "Bandingkan Dua Tahun Berbeda" = "year_comparison",
+                        "Bandingkan Dua Negara Berbeda" = "country_comparison"
+                    ),
+                    selected = "year_comparison"
+                )
+            ),
+            
+            # Year comparison options
+            conditionalPanel(
+                condition = paste0("input['", data_type_id, "'] != '' && input['", analysis_type_id, "'] == 'year_comparison'"),
+                h6("📅 Perbandingan Tahun:", style = "color: #007bff;"),
+                fluidRow(
+                    column(6,
+                        selectizeInput(year1_id, "Tahun 1:",
+                            choices = c(),
+                            selected = NULL,
+                            options = list(
+                                placeholder = "Pilih tahun...",
+                                onInitialize = I('function() { this.setValue(""); }')
+                            )
+                        )
+                    ),
+                    column(6,
+                        selectizeInput(year2_id, "Tahun 2:",
+                            choices = c(),
+                            selected = NULL,
+                            options = list(
+                                placeholder = "Pilih tahun...",
+                                onInitialize = I('function() { this.setValue(""); }')
+                            )
+                        )
+                    )
+                ),
+                helpText("Membandingkan emisi semua negara antara dua tahun yang dipilih")
+            ),
+            
+            # Country comparison options
+            conditionalPanel(
+                condition = paste0("input['", data_type_id, "'] != '' && input['", analysis_type_id, "'] == 'country_comparison'"),
+                h6("🏛️ Perbandingan Negara:", style = "color: #007bff;"),
+                fluidRow(
+                    column(6,
+                        selectizeInput(country1_id, "Negara 1:",
+                            choices = c(),
+                            selected = NULL,
+                            multiple = FALSE,
+                            options = list(
+                                placeholder = "Pilih negara...",
+                                onInitialize = I('function() { this.setValue(""); }')
+                            )
+                        )
+                    ),
+                    column(6,
+                        selectizeInput(country2_id, "Negara 2:",
+                            choices = c(),
+                            selected = NULL,
+                            multiple = FALSE,
+                            options = list(
+                                placeholder = "Pilih negara...",
+                                onInitialize = I('function() { this.setValue(""); }')
+                            )
+                        )
+                    )
+                ),
+                helpText("Membandingkan emisi dua negara menggunakan semua tahun yang tersedia")
+            )
+        ),
+        br()
     )
 }
 

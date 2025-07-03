@@ -11,6 +11,7 @@ source("utils/csv_utils.R")
 source("utils/plot_utils.R")
 source("utils/ui_helpers.R")
 source("utils/notification_helpers.R")
+source("utils/emission_utils.R")
 
 # Source Shiny modules
 source("modules/input_panel_module.R")
