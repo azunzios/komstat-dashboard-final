@@ -10,9 +10,8 @@ Cara install seperti biasa untuk node:
 - install R
 - install library-library yang ada di R
 
-Bagianku sudah selesai, tinggal selesaikan
-Kurangnya:
-- daftar
-- redirect (href) di navigasi bar menu
-- analisis non parametrik (input data dari luar atau pakai data sendiri GHGE) setelah semuanya selesai.
-- 
+Cara Run:
+
+di terminal pertama jalankan `cd frontend && npm start`
+
+di terminal kedua jalankan `cd server && Rscript .\run_both.R`
