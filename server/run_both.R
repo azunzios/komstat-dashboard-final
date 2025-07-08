@@ -2,7 +2,7 @@
 # This script runs both the Plumber API and Shiny app simultaneously
 
 # Install required packages if not already installed
-required_packages <- c("plumber", "shiny", "future", "promises", "jsonlite", "dplyr", "readr")
+required_packages <- c("plumber", "shiny", "future", "promises", "jsonlite", "dplyr", "readr", "readxl", "writexl", "haven")
 missing_packages <- required_packages[!required_packages %in% installed.packages()[, "Package"]]
 if (length(missing_packages)) {
     install.packages(missing_packages, repos = "https://cloud.r-project.org/")

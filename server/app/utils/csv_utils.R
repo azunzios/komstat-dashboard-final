@@ -1,5 +1,25 @@
-# CSV Utilities
-# Functions untuk membaca dan memproses file CSV
+# Data Import Utilities
+# Functions untuk membaca dan memproses file data (CSV, Excel, SPSS)
+
+#' Check if required packages are installed and load them
+#' @param packages Character vector of package names
+#' @return TRUE if all packages are loaded successfully, FALSE otherwise
+check_and_load_packages <- function(packages) {
+  not_installed <- packages[!sapply(packages, requireNamespace, quietly = TRUE)]
+  
+  if (length(not_installed) > 0) {
+    message("Installing missing packages: ", paste(not_installed, collapse = ", "))
+    for (pkg in not_installed) {
+      install.packages(pkg, quiet = TRUE)
+    }
+  }
+  
+  for (pkg in packages) {
+    library(pkg, character.only = TRUE, quietly = TRUE)
+  }
+  
+  return(TRUE)
+}
 
 #' Read CSV file with robust error handling
 #' @param file_path Path to CSV file
@@ -107,13 +127,153 @@ read_csv_robust <- function(file_path) {
                 sample2 = sample2,
                 n = length(sample1),
                 separator = separator,
-                has_header = has_header
+                has_header = has_header,
+                source = "CSV"
             ))
         },
         error = function(e) {
             stop(e$message)
         }
     )
+}
+
+#' Read Excel file with robust error handling
+#' @param file_path Path to Excel file
+#' @return List containing sample1, sample2, n
+read_excel_robust <- function(file_path) {
+    # Ensure readxl package is loaded
+    if (!check_and_load_packages("readxl")) {
+        stop("Gagal memuat package readxl yang diperlukan")
+    }
+    
+    tryCatch(
+        {
+            # Read the Excel file
+            data <- readxl::read_excel(file_path)
+            
+            # Convert to data frame if it's not already
+            data <- as.data.frame(data)
+            
+            if (nrow(data) < 5) {
+                stop("Minimal 5 baris data diperlukan")
+            }
+            
+            # Find first two numeric columns
+            numeric_cols <- c()
+            for (col_name in names(data)) {
+                if (is.numeric(data[[col_name]])) {
+                    numeric_cols <- c(numeric_cols, col_name)
+                    if (length(numeric_cols) == 2) break
+                }
+            }
+            
+            if (length(numeric_cols) < 2) {
+                stop("File Excel harus memiliki minimal 2 kolom numerik")
+            }
+            
+            # Extract data from the first two numeric columns
+            sample1 <- data[[numeric_cols[1]]]
+            sample2 <- data[[numeric_cols[2]]]
+            
+            # Remove any NA values, keeping paired observations
+            valid_rows <- !is.na(sample1) & !is.na(sample2)
+            sample1 <- sample1[valid_rows]
+            sample2 <- sample2[valid_rows]
+            
+            if (length(sample1) < 5 || length(sample2) < 5) {
+                stop("Minimal 5 pasang data numerik valid diperlukan")
+            }
+            
+            return(list(
+                sample1 = sample1,
+                sample2 = sample2,
+                n = length(sample1),
+                source = "Excel"
+            ))
+        },
+        error = function(e) {
+            stop(paste("Error membaca file Excel:", e$message))
+        }
+    )
+}
+
+#' Read SPSS file with robust error handling
+#' @param file_path Path to SPSS file
+#' @return List containing sample1, sample2, n
+read_spss_robust <- function(file_path) {
+    # Ensure haven package is loaded
+    if (!check_and_load_packages("haven")) {
+        stop("Gagal memuat package haven yang diperlukan")
+    }
+    
+    tryCatch(
+        {
+            # Read the SPSS file
+            data <- haven::read_sav(file_path)
+            
+            # Convert to data frame
+            data <- as.data.frame(data)
+            
+            if (nrow(data) < 5) {
+                stop("Minimal 5 baris data diperlukan")
+            }
+            
+            # Find first two numeric columns
+            numeric_cols <- c()
+            for (col_name in names(data)) {
+                if (is.numeric(data[[col_name]])) {
+                    numeric_cols <- c(numeric_cols, col_name)
+                    if (length(numeric_cols) == 2) break
+                }
+            }
+            
+            if (length(numeric_cols) < 2) {
+                stop("File SPSS harus memiliki minimal 2 kolom numerik")
+            }
+            
+            # Extract data from the first two numeric columns
+            sample1 <- data[[numeric_cols[1]]]
+            sample2 <- data[[numeric_cols[2]]]
+            
+            # Remove any NA values, keeping paired observations
+            valid_rows <- !is.na(sample1) & !is.na(sample2)
+            sample1 <- sample1[valid_rows]
+            sample2 <- sample2[valid_rows]
+            
+            if (length(sample1) < 5 || length(sample2) < 5) {
+                stop("Minimal 5 pasang data numerik valid diperlukan")
+            }
+            
+            return(list(
+                sample1 = sample1,
+                sample2 = sample2,
+                n = length(sample1),
+                source = "SPSS"
+            ))
+        },
+        error = function(e) {
+            stop(paste("Error membaca file SPSS:", e$message))
+        }
+    )
+}
+
+#' Read data file based on file extension
+#' @param file_path Path to data file
+#' @return List containing sample1, sample2, n and other info
+read_data_file <- function(file_path) {
+    # Get file extension (lowercase)
+    file_ext <- tolower(tools::file_ext(file_path))
+    
+    # Call appropriate reader based on file extension
+    if (file_ext == "csv") {
+        return(read_csv_robust(file_path))
+    } else if (file_ext %in% c("xls", "xlsx")) {
+        return(read_excel_robust(file_path))
+    } else if (file_ext == "sav") {
+        return(read_spss_robust(file_path))
+    } else {
+        stop(paste("Format file tidak didukung:", file_ext))
+    }
 }
 
 #' Parse manual input samples
@@ -150,20 +310,69 @@ parse_manual_samples <- function(sample1_text, sample2_text) {
     )
 }
 
-#' Generate CSV template content
+#' Generate template content for different file formats
+#' @param format File format ("csv", "excel", "spss")
+#' @return Character vector of template lines (for CSV) or path to temporary file (for Excel/SPSS)
+generate_template <- function(format = "csv") {
+    if (format == "csv") {
+        return(c(
+            "Sebelum,Sesudah",
+            "78,75",
+            "82,79",
+            "85,82",
+            "79,76",
+            "88,85",
+            "76,73",
+            "84,81",
+            "87,84",
+            "81,78",
+            "89,86"
+        ))
+    } else if (format == "excel") {
+        # Ensure readxl package is loaded
+        if (!check_and_load_packages(c("readxl", "writexl"))) {
+            stop("Gagal memuat packages readxl dan writexl yang diperlukan")
+        }
+        
+        # Create a data frame with the template data
+        template_df <- data.frame(
+            Sebelum = c(78, 82, 85, 79, 88, 76, 84, 87, 81, 89),
+            Sesudah = c(75, 79, 82, 76, 85, 73, 81, 84, 78, 86)
+        )
+        
+        # Create a temporary file
+        temp_file <- tempfile(fileext = ".xlsx")
+        
+        # Write the data frame to the temporary file
+        writexl::write_xlsx(template_df, temp_file)
+        
+        return(temp_file)
+    } else if (format == "spss") {
+        # Ensure haven package is loaded
+        if (!check_and_load_packages("haven")) {
+            stop("Gagal memuat package haven yang diperlukan")
+        }
+        
+        # Create a data frame with the template data
+        template_df <- data.frame(
+            Sebelum = c(78, 82, 85, 79, 88, 76, 84, 87, 81, 89),
+            Sesudah = c(75, 79, 82, 76, 85, 73, 81, 84, 78, 86)
+        )
+        
+        # Create a temporary file
+        temp_file <- tempfile(fileext = ".sav")
+        
+        # Write the data frame to the temporary file
+        haven::write_sav(template_df, temp_file)
+        
+        return(temp_file)
+    } else {
+        stop("Format template tidak didukung")
+    }
+}
+
+#' Generate CSV template content (backwards compatibility)
 #' @return Character vector of CSV template lines
 generate_csv_template <- function() {
-    c(
-        "Sebelum,Sesudah",
-        "78,75",
-        "82,79",
-        "85,82",
-        "79,76",
-        "88,85",
-        "76,73",
-        "84,81",
-        "87,84",
-        "81,78",
-        "89,86"
-    )
+    generate_template("csv")
 }
