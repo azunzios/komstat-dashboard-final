@@ -14,7 +14,16 @@ export default function InformasiPenggunaanView() {
                         <Typography variant="h4">
                             Informasi Data & Petunjuk Penggunaan
                         </Typography>
-                        <Card component="div" sx={{ whiteSpace: 'wrap', overflow: 'auto', borderRadius: 1, p: 2 }}>
+                        {/* Sisipkan video di sini */}
+                        <Box sx={{ my: 2 }}>
+                            <video width="100%" controls style={{borderRadius:30}}>
+                                <source src="/assets/profile_video_c.mp4" type="video/mp4" />
+                                Your browser does not support the video tag.
+                            </video>
+                        </Box>
+                        <Card
+                            component="div"
+                        >
                             <h3>📊 Informasi Data</h3>
                             <p>
                                 Sumber utama dari data dalam dashboard ini berasal dari <strong>Bank Dunia</strong> dan dapat diakses melalui situs resminya di{' '}
@@ -24,8 +33,8 @@ export default function InformasiPenggunaanView() {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     sx={{
-                                        color: '#000',
                                         textDecoration: 'none',
+                                        fontWeight: 1000,
                                         '&:hover': {
                                             textDecoration: 'underline'
                                         }
@@ -48,43 +57,28 @@ export default function InformasiPenggunaanView() {
                                 </p>
 
                                 <p>
-                                    Data yang digunakan <strong>tidak mencakup LULUCF</strong> (Land Use, Land-Use Change, and Forestry), yaitu aktivitas yang berkaitan dengan perubahan penggunaan lahan seperti deforestasi atau reforestasi yang dapat memengaruhi stok karbon di alam. Dengan mengecualikan LULUCF, maka yang dianalisis adalah emisi dari sektor energi, industri, limbah, dan pertanian.
+                                    Data yang digunakan <strong>tidak mencakup LULUCF</strong> (Land Use, Land-Use Change, and Forestry), yaitu aktivitas yang berkaitan dengan perubahan penggunaan lahan seperti deforestasi atau reforestasi yang dapat memengaruhi stok karbon di alam. Hal ini memungkinkan analisis yang lebih terfokus pada emisi dari sumber energi, industri, limbah, dan pertanian.
                                 </p>
 
                                 <h3>🛠️ Petunjuk Penggunaan</h3>
                                 <p>
-                                    Di dalam dashboard ini, Anda akan menemukan berbagai elemen interaktif seperti <strong>input teks, dropdown, pemilih tahun (slider), pilihan negara dan tipe gas</strong>. Komponen-komponen ini telah dikelompokkan dan dirancang agar mudah diubah sesuai kebutuhan analisis pengguna. Anda dapat dengan bebas memilih kombinasi negara, rentang waktu, dan tipe gas rumah kaca untuk menyesuaikan tampilan informasi yang ingin Anda telusuri.
+                                    Di dalam dashboard ini, Anda akan menemukan berbagai elemen interaktif seperti <strong>input teks, dropdown, pemilih tahun (slider), pilihan negara dan tipe gas</strong>. Semua komponen ini disusun agar mudah dikonfigurasi sesuai dengan kebutuhan analisis data. Anda dapat memilih kombinasi parameter untuk menyesuaikan visualisasi data, yang secara otomatis akan memperbarui grafik, tabel, dan statistik yang ditampilkan.
                                 </p>
-
                                 <p>
-                                    Salah satu fitur menarik dalam dashboard ini adalah formulir yang memungkinkan Anda <strong>melakukan simulasi perubahan data</strong>. Artinya, Anda bisa memasukkan nilai secara manual untuk melihat bagaimana perubahan angka tertentu dapat memengaruhi keseluruhan statistik seperti rata-rata, pertumbuhan tahunan, hingga grafik visualisasi tren. Perlu dicatat bahwa perubahan ini bersifat lokal dan tidak akan mengubah data asli.
+                                    Fitur unggulan lainnya adalah formulir simulasi perubahan data. Dengan formulir ini, Anda bisa memasukkan nilai manual untuk melihat dampak perubahan terhadap statistik, seperti perhitungan rata-rata, median, serta tren pertumbuhan tahunan. Fitur ini sangat berguna untuk analisis "what-if" yang membantu memberikan gambaran tentang potensi skenario jika terjadi perubahan data.
                                 </p>
-
                                 <p>
-                                    Di bagian atas atau samping dashboard tersedia navigasi berupa <strong>daftar isi atau tombol loncat section</strong>. Anda dapat menggunakannya untuk langsung menuju bagian yang ingin Anda lihat tanpa harus menggulir manual. Beberapa section penting di dalam dashboard ini adalah:
+                                    Selain itu, navigasi yang disediakan di bagian atas atau samping dashboard memungkinkan Anda untuk langsung meloncat ke section tertentu, sehingga memudahkan akses ke informasi yang ingin Anda telusuri, seperti tren historis emisi atau detail data per negara.
                                 </p>
-
-                                <ul>
-                                    <li><strong>Gambaran Umum GHGE berdasarkan Tahun dan Area:</strong> Menampilkan tren emisi gas rumah kaca global berdasarkan lokasi geografis dan rentang waktu tertentu, memberikan konteks spasial dan temporal.</li>
-                                    <li><strong>Gambaran Umum GHGE berdasarkan Area, Tahun, dan Tipe Gas:</strong> Memberikan rincian distribusi emisi untuk setiap tipe gas seperti CO<sub>2</sub>, CH<sub>4</sub>, N<sub>2</sub>O secara per wilayah dan waktu.</li>
-                                    <li><strong>Gambaran Umum GHGE berdasarkan Tahun dan Tipe Gas:</strong> Menampilkan evolusi masing-masing tipe gas dari tahun ke tahun, berguna untuk mengidentifikasi gas mana yang memiliki tren peningkatan atau penurunan signifikan.</li>
-                                    <li><strong>Tabel Data Detail:</strong> Disediakan dalam bentuk tabel yang dapat dicari dan difilter. Tabel ini menampilkan data numerik mentah dari hasil pemrosesan dan dapat digunakan untuk referensi analitis lebih lanjut.</li>
-                                </ul>
-
-                                <h3>📈 Menu Analisis</h3>
                                 <p>
-                                    Selain dashboard utama, pengguna dapat mengakses halaman khusus <strong>Analisis</strong> yang tersedia melalui menu navigasi (navbar). Di halaman ini, disediakan berbagai jenis analisis deskriptif dan non-parametrik yang membantu memahami lebih dalam pola, anomali, dan korelasi dari data emisi.
-                                </p>
-
-                                <p>
-                                    Analisis yang tersedia mencakup: tren pertumbuhan tahunan, variasi antar negara, dan perbandingan per sektor. Semua metode analisis dilakukan berdasarkan prinsip transparansi data dan tidak dimodifikasi untuk menghasilkan bias atau opini tertentu.
+                                    Petunjuk penggunaan juga mencakup panduan langkah demi langkah tentang cara menggunakan fitur-fitur ini, sehingga pengguna, baik pemula maupun yang berpengalaman, dapat dengan mudah memahami dan mengoptimalkan penggunaan dashboard.
                                 </p>
                             </Box>
                         </Card>
                         <Typography variant="h4" sx={{ mt: 2 }}>
                             Anggota Kelompok
                         </Typography>
-                        <Card>
+                        <Card sx={{ p: 2, mb: 2 }}>
                             <Box id="tentang-kami-section">
                                 <Stack direction="column" spacing={2}>
                                     <Stack direction="row" spacing={2} sx={{ display: 'flex', alignItems: 'center' }}>
@@ -117,8 +111,13 @@ export default function InformasiPenggunaanView() {
                                 </Stack>
                             </Box>
                         </Card>
+                        {/* Tambahan informasi di bawah Anggota Kelompok */}
+                        <Typography variant="body2" sx={{ mt: 2, fontStyle: 'italic' }}>
+                            ditujukan untuk memenuhi penugasan mata kuliah komputasi statistik kelas 2KS1 politeknik Statistika STIS
+                        </Typography>
                     </Box>
                 </Grid>
+
             </Grid>
         </Box>
     )

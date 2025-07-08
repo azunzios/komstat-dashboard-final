@@ -5,12 +5,21 @@
 library(shiny)
 library(shinyjs)
 
+# Optional packages for file formats - will be installed on demand if needed
+required_packages <- c("readxl", "writexl", "haven")
+for (pkg in required_packages) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    message("Package '", pkg, "' is not installed.")
+  }
+}
+
 # Source utility functions
 source("utils/stat_tests.R")
 source("utils/csv_utils.R")
 source("utils/plot_utils.R")
 source("utils/ui_helpers.R")
 source("utils/notification_helpers.R")
+source("utils/emission_utils.R")
 
 # Source Shiny modules
 source("modules/input_panel_module.R")
@@ -22,7 +31,12 @@ ui <- fluidPage(
     useShinyjs(),
 
     # App title
-    titlePanel("Uji Non Parametrik - Sign, Wilcoxon, Run, & Mann Whitney U"),
+    tags$head(
+        tags$title("Uji Nonparametrik Dua Sampel")
+    ),
+
+    tags$h1("Uji Nonparametrik Dua Sampel", style = "font-weight: bold;"),
+
 
     # Main layout
     fluidRow(

@@ -16,7 +16,7 @@ export default function HighlightedCard() {
   };
 
   return (
-    <Card sx={{ height: '100%', p: 2, width: '100%'}}>
+    <Card sx={{ height: '100%', p: 2, width: '100%' }}>
       <CardContent>
         <PictureAsPdfIcon />
         <Typography component="h2" variant="subtitle2" gutterBottom sx={{ fontWeight: '600' }}>

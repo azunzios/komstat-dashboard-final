@@ -33,10 +33,10 @@ get_info_box_style <- function(style_class) {
 create_test_selection <- function(input_id, selected = "sign") {
     radioButtons(input_id, "Pilih Jenis Uji:",
         choices = list(
-            "Uji Sign" = "sign",
-            "Uji Wilcoxon" = "wilcoxon",
-            "Uji Run" = "run",
-            "Uji Mann Whitney U" = "mannwhitney"
+            "Uji Tanda (Sign Test)" = "sign",
+            "Uji Wilcoxon Signed-Rank" = "wilcoxon",
+            "Uji Runs (Runs Test)" = "run",
+            "Uji Mann-Whitney U" = "mannwhitney"
         ),
         selected = selected
     )
@@ -50,31 +50,27 @@ create_test_selection <- function(input_id, selected = "sign") {
 #' @return Div containing file upload UI
 create_file_upload_section <- function(file_input_id, clear_button_id, download_button_id, file_status_output_id) {
     div(
-        h5("📁 Upload File CSV:"),
-        fileInput(file_input_id, NULL, accept = ".csv"),
+        h5("📁 Upload File Data:"),
+        
+        fileInput(file_input_id, NULL, 
+                accept = c(".csv", ".xls", ".xlsx", ".sav"),
+                buttonLabel = "Browse..."),
 
         # Buttons for file management
-        fluidRow(
-            column(
-                6,
-                downloadButton(download_button_id, "Download Template",
-                    class = "btn btn-success btn-sm"
+        div(class = "row",
+            div(class = "col-12 col-md-6 mb-2 px-2",
+                downloadButton(download_button_id, "Download Template CSV",
+                    class = "btn btn-success btn-sm w-100 text-truncate"
                 )
             ),
-            column(
-                6,
+            div(class = "col-12 col-md-6 mb-2 px-2",
                 actionButton(clear_button_id, "🗑️ Clear File",
-                    class = "btn btn-warning btn-sm"
+                    class = "btn btn-warning btn-sm w-100"
                 )
             )
         ),
-
-        # File status
-        conditionalPanel(
-            condition = paste0("output['", file_status_output_id, "'] != ''"),
-            create_info_box("📄", "File aktif", textOutput(file_status_output_id, inline = TRUE))
-        ),
-        helpText("Format: 2 kolom data numerik, minimal 5 baris"),
+        
+        helpText("Format: File CSV, Excel (.xlsx/.xls), atau SPSS (.sav) dengan 2 kolom data numerik dan 5 baris"),
         br()
     )
 }
@@ -83,10 +79,9 @@ create_file_upload_section <- function(file_input_id, clear_button_id, download_
 #' @param use_manual_id Use manual button ID
 #' @param sample1_id Sample 1 input ID
 #' @param sample2_id Sample 2 input ID
-#' @param load_template_id Load template button ID
 #' @param test_type_input_id Test type input ID (namespaced)
 #' @return Div containing manual input UI
-create_manual_input_section <- function(use_manual_id, sample1_id, sample2_id, load_template_id, test_type_input_id) {
+create_manual_input_section <- function(use_manual_id, sample1_id, sample2_id, test_type_input_id) {
     div(
         h5("✏️ Atau Input Manual:"),
 
@@ -106,27 +101,163 @@ create_manual_input_section <- function(use_manual_id, sample1_id, sample2_id, l
 
         # Conditional notes for different test types
         conditionalPanel(
-            condition = paste0("input['", test_type_input_id, "'] == 'mannwhitney'"),
+            condition = paste0("input['", test_type_input_id, "'] == 'sign'"),
             create_info_box(
-                "📝", "Catatan Mann Whitney U",
-                "Sampel 1 dan Sampel 2 adalah dua kelompok <em>independen</em> (bukan berpasangan).<br/>
-        Uji ini membandingkan distribusi/median kedua kelompok.",
-                "warning-box"
+                "📝", "Catatan Uji Tanda (Sign Test)",
+                "<b>Tujuan:</b> Menguji apakah terdapat perbedaan median antara dua pengukuran berpasangan.<br/>
+<b>Jenis Sampel:</b> Berpasangan (dependen).<br/>
+<b>H0:</b> Tidak ada perbedaan median antara dua kondisi (median perbedaan = 0).<br/>
+<b>H1:</b> Ada perbedaan median antara dua kondisi (median perbedaan ≠ 0).<br/>
+Digunakan untuk data ordinal atau interval yang tidak berdistribusi normal.",
+                "note-box"
+            )
+        ),
+        conditionalPanel(
+            condition = paste0("input['", test_type_input_id, "'] == 'wilcoxon'"),
+            create_info_box(
+                "📝", "Catatan Wilcoxon Signed-Rank",
+                "<b>Tujuan:</b> Menguji perbedaan median antara dua pengukuran berpasangan dengan memperhitungkan besar dan arah perbedaan.<br/>
+<b>Jenis Sampel:</b> Berpasangan (dependen).<br/>
+<b>H0:</b> Distribusi perbedaan berpusat di nol (tidak ada perbedaan).<br/>
+<b>H1:</b> Distribusi perbedaan tidak berpusat di nol (ada perbedaan).<br/>
+Lebih sensitif daripada Uji Tanda karena memperhitungkan ranking perbedaan.",
+                "note-box"
             )
         ),
         conditionalPanel(
             condition = paste0("input['", test_type_input_id, "'] == 'run'"),
             create_info_box(
-                "📝", "Catatan Run Test",
-                "Uji Run menguji randomness urutan perbedaan (Sampel1 - Sampel2).<br/>
-        H0: Urutan perbedaan bersifat random.",
+                "📝", "Catatan Runs (Runs Test)",
+                "<b>Tujuan:</b> Menguji apakah urutan data (misal: tanda perbedaan) bersifat random.<br/>
+<b>Jenis Sampel:</b> Berpasangan (dependen).<br/>
+<b>H0:</b> Urutan perbedaan bersifat random.<br/>
+<b>H1:</b> Urutan perbedaan tidak random.<br/>
+Digunakan untuk mendeteksi pola non-random pada data berurutan.",
                 "note-box"
             )
         ),
-        actionButton(load_template_id, "📋 Gunakan Template",
-            class = "btn btn-secondary btn-sm"
+        conditionalPanel(
+            condition = paste0("input['", test_type_input_id, "'] == 'mannwhitney'"),
+            create_info_box(
+                "📝", "Catatan Mann-Whitney U",
+                "<b>Tujuan:</b> Menguji apakah dua kelompok independen memiliki distribusi/median yang sama.<br/>
+<b>Jenis Sampel:</b> Dua kelompok independen.<br/>
+<b>H0:</b> Distribusi/median kedua kelompok sama.<br/>
+<b>H1:</b> Distribusi/median kedua kelompok berbeda.<br/>
+Alternatif nonparametrik dari uji t dua sampel independen.",
+                "note-box"
+            )
         ),
         br(), br()
+    )
+}
+
+#' Create emission data selection section
+#' @param data_type_id ID for data type selection
+#' @param analysis_type_id ID for analysis type selection
+#' @param country1_id ID for first country selection
+#' @param country2_id ID for second country selection
+#' @param year1_id ID for year1 selection (for year comparison)
+#' @param year2_id ID for year2 selection (for year comparison)
+#' @param use_emission_id ID for use emission data checkbox
+#' @return Div containing emission data selection UI
+create_emission_data_section <- function(data_type_id, analysis_type_id, country1_id, country2_id, year1_id, year2_id, use_emission_id) {
+    div(
+        h6("🌍 Data Emisi Gas Rumah Kaca", style = "color: #28a745; font-weight: bold;"),
+        
+        checkboxInput(use_emission_id, "Gunakan Data Emisi", value = FALSE),
+        
+        conditionalPanel(
+            condition = paste0("input['", use_emission_id, "']"),
+            
+            # Data type selection
+            selectizeInput(data_type_id, "Jenis Data Emisi:",
+                choices = list(
+                    "Nilai emisi CH4" = "CH4",
+                    "Nilai emisi CO2" = "CO2", 
+                    "Nilai emisi N2O" = "N2O",
+                    "Nilai total emisi gas rumah kaca" = "TOTAL"
+                ),
+                selected = NULL,
+                options = list(
+                    placeholder = "Pilih jenis data...",
+                    onInitialize = I('function() { this.setValue(""); }')
+                )
+            ),
+            
+            # Analysis type selection
+            conditionalPanel(
+                condition = paste0("input['", data_type_id, "'] != ''"),
+                radioButtons(analysis_type_id, "Jenis Analisis:",
+                    choices = list(
+                        "Bandingkan Dua Tahun Berbeda" = "year_comparison",
+                        "Bandingkan Dua Negara Berbeda" = "country_comparison"
+                    ),
+                    selected = "year_comparison"
+                )
+            ),
+            
+            # Year comparison options
+            conditionalPanel(
+                condition = paste0("input['", data_type_id, "'] != '' && input['", analysis_type_id, "'] == 'year_comparison'"),
+                h6("📅 Perbandingan Tahun:", style = "color: #007bff;"),
+                fluidRow(
+                    column(6,
+                        selectizeInput(year1_id, "Tahun 1:",
+                            choices = c(),
+                            selected = NULL,
+                            options = list(
+                                placeholder = "Pilih tahun...",
+                                onInitialize = I('function() { this.setValue(""); }')
+                            )
+                        )
+                    ),
+                    column(6,
+                        selectizeInput(year2_id, "Tahun 2:",
+                            choices = c(),
+                            selected = NULL,
+                            options = list(
+                                placeholder = "Pilih tahun...",
+                                onInitialize = I('function() { this.setValue(""); }')
+                            )
+                        )
+                    )
+                ),
+                helpText("Membandingkan emisi semua negara antara dua tahun yang dipilih")
+            ),
+            
+            # Country comparison options
+            conditionalPanel(
+                condition = paste0("input['", data_type_id, "'] != '' && input['", analysis_type_id, "'] == 'country_comparison'"),
+                h6("🏛️ Perbandingan Negara:", style = "color: #007bff;"),
+                fluidRow(
+                    column(6,
+                        selectizeInput(country1_id, "Negara 1:",
+                            choices = c(),
+                            selected = NULL,
+                            multiple = FALSE,
+                            options = list(
+                                placeholder = "Pilih negara...",
+                                onInitialize = I('function() { this.setValue(""); }')
+                            )
+                        )
+                    ),
+                    column(6,
+                        selectizeInput(country2_id, "Negara 2:",
+                            choices = c(),
+                            selected = NULL,
+                            multiple = FALSE,
+                            options = list(
+                                placeholder = "Pilih negara...",
+                                onInitialize = I('function() { this.setValue(""); }')
+                            )
+                        )
+                    )
+                ),
+                helpText("Membandingkan emisi dua negara menggunakan semua tahun yang tersedia")
+            )
+        ),
+        br()
     )
 }
 
@@ -136,7 +267,10 @@ create_results_placeholder <- function() {
     div(
         style = "text-align: center; margin-top: 100px;",
         h4("⏳ Siap untuk Analisis", style = "color: #666;"),
-        p("Upload file CSV atau masukkan data manual, lalu klik 'Jalankan Uji'.", style = "color: #999;"),
+        p("Unggah file data (CSV, Excel, atau SPSS) atau masukkan data secara manual." , style = "color: #999;"),
+        p("Pilih jenis uji statistik yang diinginkan dan klik 'Jalankan Uji'.", style = "color: #999;"),
+        p("Anda juga dapat menganalisis data emisi gas rumah kaca dengan memilih opsi 'Gunakan Data Emisi'.", style = "color: #999;"),
+        p("Pastikan data yang diinput minimal terdiri dari 2 kolom numerik dan 5 baris untuk hasil analisis yang valid.", style = "color: #999;"),
         div(
             style = "margin-top: 30px;",
             span("💡 Tips: ", style = "font-weight: bold; color: #007bff;"),

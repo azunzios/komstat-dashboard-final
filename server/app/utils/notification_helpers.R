@@ -25,7 +25,14 @@ show_info_notification <- function(message) {
     showNotification(paste("📁", message), type = "message")
 }
 
-#' Show CSV read success notification
+#' Show file read success notification 
+#' @param file_type Type of file (CSV, Excel, SPSS)
+#' @param n_pairs Number of data pairs
+show_success_notification <- function(file_type, n_pairs) {
+    show_info_notification(paste(file_type, n_pairs, "pasang data"))
+}
+
+#' Show CSV read success notification (backward compatibility)
 #' @param n_pairs Number of data pairs
 show_csv_success_notification <- function(n_pairs) {
     show_info_notification(paste("CSV berhasil dibaca:", n_pairs, "pasang data"))
