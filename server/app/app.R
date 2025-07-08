@@ -9,7 +9,7 @@ library(shinyjs)
 required_packages <- c("readxl", "writexl", "haven")
 for (pkg in required_packages) {
   if (!requireNamespace(pkg, quietly = TRUE)) {
-    message("Package '", pkg, "' is not installed but will be installed on demand if needed.")
+    message("Package '", pkg, "' is not installed.")
   }
 }
 
@@ -31,7 +31,12 @@ ui <- fluidPage(
     useShinyjs(),
 
     # App title
-    titlePanel(tags$h1("Uji Nonparametrik Dua Sampel", style = "font-weight: bold;")),
+    tags$head(
+        tags$title("Uji Nonparametrik Dua Sampel")
+    ),
+
+    tags$h1("Uji Nonparametrik Dua Sampel", style = "font-weight: bold;"),
+
 
     # Main layout
     fluidRow(

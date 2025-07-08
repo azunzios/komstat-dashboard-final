@@ -267,7 +267,10 @@ create_results_placeholder <- function() {
     div(
         style = "text-align: center; margin-top: 100px;",
         h4("⏳ Siap untuk Analisis", style = "color: #666;"),
-        p("Upload file CSV atau masukkan data manual, lalu klik 'Jalankan Uji'.", style = "color: #999;"),
+        p("Unggah file data (CSV, Excel, atau SPSS) atau masukkan data secara manual." , style = "color: #999;"),
+        p("Pilih jenis uji statistik yang diinginkan dan klik 'Jalankan Uji'.", style = "color: #999;"),
+        p("Anda juga dapat menganalisis data emisi gas rumah kaca dengan memilih opsi 'Gunakan Data Emisi'.", style = "color: #999;"),
+        p("Pastikan data yang diinput minimal terdiri dari 2 kolom numerik dan 5 baris untuk hasil analisis yang valid.", style = "color: #999;"),
         div(
             style = "margin-top: 30px;",
             span("💡 Tips: ", style = "font-weight: bold; color: #007bff;"),
