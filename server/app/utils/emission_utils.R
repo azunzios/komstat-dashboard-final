@@ -281,6 +281,7 @@ prepare_emission_samples_by_years <- function(data_type, year1, year2) {
     return(list(
         sample1 = sample1,
         sample2 = sample2,
+        n = length(sample1),
         source = "Emission Data - Year Comparison",
         data_type = data_type,
         year1 = year1,
@@ -354,6 +355,7 @@ prepare_emission_samples_by_two_countries <- function(data_type, country1, count
     return(list(
         sample1 = sample1,
         sample2 = sample2,
+        n = length(sample1),
         source = "Emission Data - Country Comparison",
         data_type = data_type,
         country1 = country1,

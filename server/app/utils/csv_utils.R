@@ -301,6 +301,7 @@ parse_manual_samples <- function(sample1_text, sample2_text) {
             return(list(
                 sample1 = sample1,
                 sample2 = sample2,
+                n = length(sample1),
                 source = "Manual"
             ))
         },

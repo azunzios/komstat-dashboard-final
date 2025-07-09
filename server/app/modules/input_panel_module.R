@@ -11,18 +11,18 @@ input_panel_ui <- function(id) {
         # Test selection
         create_test_selection(ns("test_type"), "sign"),
         hr(),
-        
+
         # Emission data selection section
         create_emission_data_section(
             ns("emission_data_type"),
             ns("emission_analysis_type"),
-            ns("emission_country1"), 
+            ns("emission_country1"),
             ns("emission_country2"),
             ns("emission_year1"),
             ns("emission_year2"),
             ns("use_emission_data")
         ),
-        
+
         # Data info display for emission data
         conditionalPanel(
             condition = paste0("output['", ns("show_emission_info"), "']"),
@@ -93,187 +93,204 @@ input_panel_server <- function(id, parent_session) {
         )
 
         # Load emission data utilities with proper error handling
-        tryCatch({
-            source("utils/emission_utils.R", local = TRUE)
-            values$emission_utils_loaded <- TRUE
-        }, error = function(e) {
-            show_error_notification(paste("Error loading emission utilities:", e$message))
-            values$emission_utils_loaded <- FALSE
-        })
+        tryCatch(
+            {
+                source("utils/emission_utils.R", local = TRUE)
+                values$emission_utils_loaded <- TRUE
+            },
+            error = function(e) {
+                show_error_notification(paste("Error loading emission utilities:", e$message))
+                values$emission_utils_loaded <- FALSE
+            }
+        )
 
         # Update countries and years when data type or analysis type changes
-        observeEvent(list(input$emission_data_type, input$emission_analysis_type), {
-            # Require that emission utilities are loaded
-            req(values$emission_utils_loaded)
-            
-            if (input$emission_data_type != "") {
-                # Get analysis type (default to year_comparison if not set)
-                analysis_type <- if (is.null(input$emission_analysis_type) || input$emission_analysis_type == "") {
-                    "year_comparison"
+        observeEvent(list(input$emission_data_type, input$emission_analysis_type),
+            {
+                # Require that emission utilities are loaded
+                req(values$emission_utils_loaded)
+
+                if (input$emission_data_type != "") {
+                    # Get analysis type (default to year_comparison if not set)
+                    analysis_type <- if (is.null(input$emission_analysis_type) || input$emission_analysis_type == "") {
+                        "year_comparison"
+                    } else {
+                        input$emission_analysis_type
+                    }
+
+                    if (analysis_type == "year_comparison") {
+                        # Load years for year comparison
+                        tryCatch(
+                            {
+                                # Get years in descending order (newest first)
+                                years <- get_available_years(input$emission_data_type, descending = TRUE)
+                                year_choices <- setNames(years, years)
+
+                                # Update year dropdowns with no default selection
+                                updateSelectInput(session, "emission_year1",
+                                    choices = year_choices,
+                                    selected = NULL
+                                )
+                                updateSelectInput(session, "emission_year2",
+                                    choices = year_choices,
+                                    selected = NULL
+                                )
+                            },
+                            error = function(e) {
+                                show_error_notification(paste("Error loading years:", e$message))
+                                # Reset years dropdown on error
+                                updateSelectInput(session, "emission_year1",
+                                    choices = c(),
+                                    selected = NULL
+                                )
+                                updateSelectInput(session, "emission_year2",
+                                    choices = c(),
+                                    selected = NULL
+                                )
+                            }
+                        )
+
+                        # Reset country dropdowns for year comparison mode
+                        updateSelectInput(session, "emission_country1",
+                            choices = c(),
+                            selected = NULL
+                        )
+                        updateSelectInput(session, "emission_country2",
+                            choices = c(),
+                            selected = NULL
+                        )
+                    } else if (analysis_type == "country_comparison") {
+                        # Load countries for country comparison
+                        tryCatch(
+                            {
+                                countries <- get_available_countries(input$emission_data_type)
+
+                                updateSelectInput(session, "emission_country1",
+                                    choices = countries,
+                                    selected = NULL
+                                )
+                                updateSelectInput(session, "emission_country2",
+                                    choices = countries,
+                                    selected = NULL
+                                )
+                            },
+                            error = function(e) {
+                                show_error_notification(paste("Error loading countries:", e$message))
+                                # Reset countries dropdown on error
+                                updateSelectInput(session, "emission_country1",
+                                    choices = c(),
+                                    selected = NULL
+                                )
+                                updateSelectInput(session, "emission_country2",
+                                    choices = c(),
+                                    selected = NULL
+                                )
+                            }
+                        )
+
+                        # Reset year dropdowns for country comparison mode
+                        updateSelectInput(session, "emission_year1",
+                            choices = c(),
+                            selected = NULL
+                        )
+                        updateSelectInput(session, "emission_year2",
+                            choices = c(),
+                            selected = NULL
+                        )
+                    }
                 } else {
-                    input$emission_analysis_type
-                }
-                
-                if (analysis_type == "year_comparison") {
-                    # Load years for year comparison
-                    tryCatch({
-                        # Get years in descending order (newest first)
-                        years <- get_available_years(input$emission_data_type, descending = TRUE)
-                        year_choices <- setNames(years, years)
-                        
-                        # Update year dropdowns with no default selection
-                        updateSelectInput(session, "emission_year1",
-                            choices = year_choices,
-                            selected = NULL
-                        )
-                        updateSelectInput(session, "emission_year2",
-                            choices = year_choices,
-                            selected = NULL
-                        )
-                    }, error = function(e) {
-                        show_error_notification(paste("Error loading years:", e$message))
-                        # Reset years dropdown on error
-                        updateSelectInput(session, "emission_year1",
-                            choices = c(),
-                            selected = NULL
-                        )
-                        updateSelectInput(session, "emission_year2",
-                            choices = c(),
-                            selected = NULL
-                        )
-                    })
-                    
-                    # Reset country dropdowns for year comparison mode
-                    updateSelectInput(session, "emission_country1", 
-                        choices = c(), 
+                    # Reset all dropdowns when no data type selected
+                    updateSelectInput(session, "emission_country1",
+                        choices = c(),
                         selected = NULL
                     )
-                    updateSelectInput(session, "emission_country2", 
-                        choices = c(), 
+                    updateSelectInput(session, "emission_country2",
+                        choices = c(),
                         selected = NULL
                     )
-                    
-                } else if (analysis_type == "country_comparison") {
-                    # Load countries for country comparison
-                    tryCatch({
-                        countries <- get_available_countries(input$emission_data_type)
-                        
-                        updateSelectInput(session, "emission_country1",
-                            choices = countries,
-                            selected = NULL
-                        )
-                        updateSelectInput(session, "emission_country2",
-                            choices = countries,
-                            selected = NULL
-                        )
-                    }, error = function(e) {
-                        show_error_notification(paste("Error loading countries:", e$message))
-                        # Reset countries dropdown on error
-                        updateSelectInput(session, "emission_country1",
-                            choices = c(),
-                            selected = NULL
-                        )
-                        updateSelectInput(session, "emission_country2",
-                            choices = c(),
-                            selected = NULL
-                        )
-                    })
-                    
-                    # Reset year dropdowns for country comparison mode
-                    updateSelectInput(session, "emission_year1", 
-                        choices = c(), 
+                    updateSelectInput(session, "emission_year1",
+                        choices = c(),
                         selected = NULL
                     )
-                    updateSelectInput(session, "emission_year2", 
-                        choices = c(), 
+                    updateSelectInput(session, "emission_year2",
+                        choices = c(),
                         selected = NULL
                     )
                 }
-            } else {
-                # Reset all dropdowns when no data type selected
-                updateSelectInput(session, "emission_country1", 
-                    choices = c(), 
-                    selected = NULL
-                )
-                updateSelectInput(session, "emission_country2", 
-                    choices = c(), 
-                    selected = NULL
-                )
-                updateSelectInput(session, "emission_year1", 
-                    choices = c(), 
-                    selected = NULL
-                )
-                updateSelectInput(session, "emission_year2", 
-                    choices = c(), 
-                    selected = NULL
-                )
-            }
-        }, ignoreInit = TRUE)
+            },
+            ignoreInit = TRUE
+        )
 
         # Reset dropdowns when emission checkbox is unchecked
-        observeEvent(input$use_emission_data, {
-            if (!input$use_emission_data) {
-                # Reset all emission-related dropdowns when checkbox unchecked
-                updateSelectInput(session, "emission_data_type", selected = NULL)
-                updateSelectInput(session, "emission_country1", 
-                    choices = c(), 
-                    selected = NULL
-                )
-                updateSelectInput(session, "emission_country2", 
-                    choices = c(), 
-                    selected = NULL
-                )
-                updateSelectInput(session, "emission_year1", 
-                    choices = c(), 
-                    selected = NULL
-                )
-                updateSelectInput(session, "emission_year2", 
-                    choices = c(), 
-                    selected = NULL
-                )
-            }
-        }, ignoreInit = TRUE)
+        observeEvent(input$use_emission_data,
+            {
+                if (!input$use_emission_data) {
+                    # Reset all emission-related dropdowns when checkbox unchecked
+                    updateSelectInput(session, "emission_data_type", selected = NULL)
+                    updateSelectInput(session, "emission_country1",
+                        choices = c(),
+                        selected = NULL
+                    )
+                    updateSelectInput(session, "emission_country2",
+                        choices = c(),
+                        selected = NULL
+                    )
+                    updateSelectInput(session, "emission_year1",
+                        choices = c(),
+                        selected = NULL
+                    )
+                    updateSelectInput(session, "emission_year2",
+                        choices = c(),
+                        selected = NULL
+                    )
+                }
+            },
+            ignoreInit = TRUE
+        )
 
         # Get emission data reactive
         get_emission_data <- reactive({
             if (input$use_emission_data && input$emission_data_type != "") {
-                
                 if (input$emission_analysis_type == "year_comparison") {
                     # Year comparison mode
-                    if (input$emission_year1 != "" && input$emission_year2 != "" && 
+                    if (input$emission_year1 != "" && input$emission_year2 != "" &&
                         input$emission_year1 != input$emission_year2) {
-                        
-                        tryCatch({
-                            emission_data <- prepare_emission_samples_by_years(
-                                input$emission_data_type,
-                                as.numeric(input$emission_year1),
-                                as.numeric(input$emission_year2)
-                            )
-                            return(emission_data)
-                        }, error = function(e) {
-                            show_error_notification(paste("Error preparing emission data:", e$message))
-                            return(NULL)
-                        })
+                        tryCatch(
+                            {
+                                emission_data <- prepare_emission_samples_by_years(
+                                    input$emission_data_type,
+                                    as.numeric(input$emission_year1),
+                                    as.numeric(input$emission_year2)
+                                )
+                                return(emission_data)
+                            },
+                            error = function(e) {
+                                show_error_notification(paste("Error preparing emission data:", e$message))
+                                return(NULL)
+                            }
+                        )
                     }
                 } else if (input$emission_analysis_type == "country_comparison") {
                     # Country comparison mode
-                    if (!is.null(input$emission_country1) && 
+                    if (!is.null(input$emission_country1) &&
                         !is.null(input$emission_country2) &&
                         input$emission_country1 != "" &&
                         input$emission_country2 != "" &&
                         input$emission_country1 != input$emission_country2) {
-                        
-                        tryCatch({
-                            emission_data <- prepare_emission_samples_by_two_countries(
-                                input$emission_data_type,
-                                input$emission_country1,
-                                input$emission_country2
-                            )
-                            return(emission_data)
-                        }, error = function(e) {
-                            show_error_notification(paste("Error preparing emission data:", e$message))
-                            return(NULL)
-                        })
+                        tryCatch(
+                            {
+                                emission_data <- prepare_emission_samples_by_two_countries(
+                                    input$emission_data_type,
+                                    input$emission_country1,
+                                    input$emission_country2
+                                )
+                                return(emission_data)
+                            },
+                            error = function(e) {
+                                show_error_notification(paste("Error preparing emission data:", e$message))
+                                return(NULL)
+                            }
+                        )
                     }
                 }
             }
@@ -350,7 +367,7 @@ input_panel_server <- function(id, parent_session) {
                 writeLines(template_lines, file)
             }
         )
-        
+
         # Excel template download
         output$download_excel_template <- downloadHandler(
             filename = function() {
@@ -361,18 +378,18 @@ input_panel_server <- function(id, parent_session) {
                 if (!check_and_load_packages(c("readxl", "writexl"))) {
                     stop("Gagal memuat packages readxl dan writexl yang diperlukan")
                 }
-                
+
                 # Create a data frame with the template data
                 template_df <- data.frame(
                     Sebelum = c(78, 82, 85, 79, 88, 76, 84, 87, 81, 89),
                     Sesudah = c(75, 79, 82, 76, 85, 73, 81, 84, 78, 86)
                 )
-                
+
                 # Write the data frame to the file
                 writexl::write_xlsx(template_df, file)
             }
         )
-        
+
         # SPSS template download
         output$download_spss_template <- downloadHandler(
             filename = function() {
@@ -383,13 +400,13 @@ input_panel_server <- function(id, parent_session) {
                 if (!check_and_load_packages("haven")) {
                     stop("Gagal memuat package haven yang diperlukan")
                 }
-                
+
                 # Create a data frame with the template data
                 template_df <- data.frame(
                     Sebelum = c(78, 82, 85, 79, 88, 76, 84, 87, 81, 89),
                     Sesudah = c(75, 79, 82, 76, 85, 73, 81, 84, 78, 86)
                 )
-                
+
                 # Write the data frame to the file
                 haven::write_sav(template_df, file)
             }
@@ -401,7 +418,7 @@ input_panel_server <- function(id, parent_session) {
             if (input$use_emission_data && !is.null(values$emission_data)) {
                 return(values$emission_data)
             }
-            
+
             # Priority 2: CSV file
             use_csv <- !is.null(input$file_csv) &&
                 !is.null(input$file_csv$datapath) &&
@@ -415,10 +432,10 @@ input_panel_server <- function(id, parent_session) {
                         # Get the file extension to determine which reader to use
                         file_path <- input$file_csv$datapath
                         file_data <- read_data_file(file_path)
-                        
+
                         file_source <- file_data$source
-                        show_success_notification(paste("File", file_source, "berhasil dibaca:"), file_data$n)
-                        
+                        show_file_success_notification(paste("File", file_source, "berhasil dibaca:"), file_data$n)
+
                         return(list(
                             sample1 = file_data$sample1,
                             sample2 = file_data$sample2,
@@ -484,9 +501,9 @@ input_panel_server <- function(id, parent_session) {
 
         # Show CSV info indicator
         output$show_csv_info <- reactive({
-            !is.null(values$current_data) && 
-            values$current_data$source == "CSV" && 
-            !values$force_manual
+            !is.null(values$current_data) &&
+                values$current_data$source == "CSV" &&
+                !values$force_manual
         })
         outputOptions(output, "show_csv_info", suspendWhenHidden = FALSE)
 
