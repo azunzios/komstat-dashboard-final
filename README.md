@@ -1,6 +1,6 @@
 # Dashboard Mata Kuliah Komputasi Statistik React JS + R
 Dashboard ini menampilkan visualisasi gas efek rumah kaca secara global dan juga disertai analisis non parametriknya.  
-Pada bagian frontend menggunakan React JS, sedangkan bagian backend menggunakan R. Ada bagian yang dibuat dengan RShiny.  
+Bagian frontend dashboard dibangun dengan React JS, sedangkan bagian backend menggunakan R. Bagian tampilan analisis dibuat dengan RShiny.  
 Dependensi bisa dilihat pada package.json.   
 ## Cara menginstall
 1. Clone Repo Github ini
