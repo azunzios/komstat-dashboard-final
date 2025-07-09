@@ -1,18 +1,43 @@
-#Pakai REACT + MUI + Beberapa komponen React Lainnya
-Frontend : React JS
-Backend : R
+# Dashboard Mata Kuliah Komputasi Statistik React JS + R
+Dashboard ini menampilkan visualisasi gas efek rumah kaca secara global dan juga disertai analisis non parametriknya.  
+Bagian frontend dashboard dibangun dengan React JS, sedangkan bagian backend menggunakan R. Bagian tampilan analisis dibuat dengan RShiny.  
+Dependensi bisa dilihat pada package.json.   
+## Cara menginstall
+1. Clone Repo Github ini
+2. Install dependensi di bagian frontend
+```cmd
+cd frontend
+npm install
+```
+3. Setup server kemudian install dependensinya
+```cmd
+::(kembali ke direktori parent)
+cd server
+RScript run_both.R
+::otomatis akan menginstall dependensi yang dibutuhkan
+```
+4. Apabila ada package R yang belum terinstall, maka bisa diinstall terlebih dahulu
+```R
+#misalnya nama packagenya adalah "car"
 
-Sudah jadi, tinggal beri analisis non parametrik
-
-Cara install seperti biasa untuk node:
-- install node js dulu
-- npm install
-- install R
-- install library-library yang ada di R
-
-Bagianku sudah selesai, tinggal selesaikan
-Kurangnya:
-- daftar
-- redirect (href) di navigasi bar menu
-- analisis non parametrik (input data dari luar atau pakai data sendiri GHGE) setelah semuanya selesai.
-- 
+install.packages("car");
+#atau buat line ini:
+if (!require("car", character.only = TRUE)) {
+install.packages("car")
+library("car")
+}
+```
+6. Run
+Run frontend
+```
+::kembali ke parent directory
+cd frontend
+npm start
+```
+Run server
+```
+cd server
+RScript run_both.R
+```
+## Preview
+Nanti akan dilampirkan link preview setelah web ini dihosting.
