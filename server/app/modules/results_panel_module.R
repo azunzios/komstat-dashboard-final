@@ -9,14 +9,30 @@ results_panel_ui <- function(id) {
         # Results panel
         conditionalPanel(
             condition = paste0("output['", ns("show_results"), "'] == true"),
-            div(
-                h4("📈 Hasil Analisis"),
-                verbatimTextOutput(ns("summary")),
-                hr(),
-                h4("📊 Visualisasi"),
-                fluidRow(
-                    column(6, plotOutput(ns("main_plot"), height = "300px")),
-                    column(6, plotOutput(ns("diff_plot"), height = "300px"))
+            bslib::card(
+                bslib::card_header("📈 Hasil Analisis"),
+                bslib::card_body(
+                    verbatimTextOutput(ns("summary")),
+                    hr(),
+                    h4("📊 Visualisasi"),
+                    fluidRow(
+                        column(
+                            6,
+                            bslib::card(
+                                bslib::card_body(
+                                    plotOutput(ns("main_plot"), height = "300px")
+                                )
+                            )
+                        ),
+                        column(
+                            6,
+                            bslib::card(
+                                bslib::card_body(
+                                    plotOutput(ns("diff_plot"), height = "300px")
+                                )
+                            )
+                        )
+                    )
                 )
             )
         ),
@@ -24,7 +40,11 @@ results_panel_ui <- function(id) {
         # Placeholder when no results
         conditionalPanel(
             condition = paste0("output['", ns("show_results"), "'] != true"),
-            create_results_placeholder()
+            bslib::card(
+                bslib::card_body(
+                    create_results_placeholder()
+                )
+            )
         )
     )
 }
