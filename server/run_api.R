@@ -1,3 +1,4 @@
+library(plumber)
 cat("Starting Plumber API on http://0.0.0.0:8080\n")
 pr <- plumb("api.R")
 
