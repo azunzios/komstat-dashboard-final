@@ -67,7 +67,7 @@ shiny_future <- future({
 
 cat("\n")
 cat("Both services are starting...\n")
-cat("API will be available at: http://0.0.0.0:8000\n")
+cat("API will be available at: http://0.0.0.0:8080\n")
 cat("Shiny App will be available at: http://0.0.0.0:3838\n")
 cat("\n")
 cat("Press Ctrl+C to stop both services\n")

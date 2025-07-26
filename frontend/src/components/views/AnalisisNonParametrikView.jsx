@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardContent, Grid, Box } from '@mui/material';
 
+
 const AnalisisNonparametrikView = () => {
   return (
     <Box>
@@ -10,7 +11,7 @@ const AnalisisNonparametrikView = () => {
             {/* Hapus padding dari CardContent agar iframe menempel sempurna */}
             <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
               <iframe
-                src="http://$API_BASE_URL:3838" // Pastikan URL ini sesuai dengan app Shiny Anda
+                src="http://72.155.72.133:3838"
                 title="Analisis Nonparametrik - R Shiny"
                 style={{
                   width: '85vw',
