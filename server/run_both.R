@@ -21,7 +21,7 @@ cat("===============================================\n")
 
 # Function to start the API
 start_api <- function() {
-    cat("Starting Plumber API on http://$API_BASE_URL:8000\n")
+    cat("Starting Plumber API on http://0.0.0.0:8080\n")
     pr <- plumb("api.R")
 
     # Enable CORS for all routes
@@ -43,7 +43,7 @@ start_api <- function() {
 
 # Function to start the Shiny app
 start_shiny <- function() {
-    cat("Starting Shiny App on http://$API_BASE_URL:3838\n")
+    cat("Starting Shiny App on http://0.0.0.0:3838\n")
     shiny::runApp(
         appDir = "app",
         port = 3838,
@@ -67,8 +67,8 @@ shiny_future <- future({
 
 cat("\n")
 cat("Both services are starting...\n")
-cat("API will be available at: http://$API_BASE_URL:8000\n")
-cat("Shiny App will be available at: http://$API_BASE_URL:3838\n")
+cat("API will be available at: http://0.0.0.0:8000\n")
+cat("Shiny App will be available at: http://0.0.0.0:3838\n")
 cat("\n")
 cat("Press Ctrl+C to stop both services\n")
 cat("===============================================\n")
