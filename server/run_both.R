@@ -38,7 +38,7 @@ start_api <- function() {
         plumber::forward()
     })
 
-    pr$run(port = 8000, host = "0.0.0.0")
+    pr$run(port = 8080, host = "0.0.0.0")
 }
 
 # Function to start the Shiny app
