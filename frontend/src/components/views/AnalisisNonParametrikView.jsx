@@ -10,7 +10,7 @@ const AnalisisNonparametrikView = () => {
             {/* Hapus padding dari CardContent agar iframe menempel sempurna */}
             <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
               <iframe
-                src="http://127.0.0.1:3838" // Pastikan URL ini sesuai dengan app Shiny Anda
+                src="http://$API_BASE_URL:3838" // Pastikan URL ini sesuai dengan app Shiny Anda
                 title="Analisis Nonparametrik - R Shiny"
                 style={{
                   width: '85vw',

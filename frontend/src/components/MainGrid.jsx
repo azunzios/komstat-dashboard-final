@@ -80,12 +80,12 @@ export default function MainGrid() {
     setError(null);
     const loadData = async () => {
       try {
-        const countriesRes = await fetch('http://127.0.0.1:8000/countries');
+        const countriesRes = await fetch('http://$API_BASE_URL:8000/countries');
         const countriesData = await countriesRes.json();
         const countryObj = countriesData.countries.find(c => c.name === country);
         setCountryCode(countryObj ? countryObj.code : 'WLD');
 
-        const statsRes = await fetch(`http://127.0.0.1:8000/statistics?country_code=${countryObj ? countryObj.code : 'WLD'}&start_year=${yearRange[0]}&end_year=${yearRange[1]}`);
+        const statsRes = await fetch(`http://$API_BASE_URL:8000/statistics?country_code=${countryObj ? countryObj.code : 'WLD'}&start_year=${yearRange[0]}&end_year=${yearRange[1]}`);
         const statsData = await statsRes.json();
         setStats(statsData);
       } catch (err) {

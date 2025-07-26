@@ -12,7 +12,7 @@ export function useCountries() {
 
   useEffect(() => {
     setLoading(true);
-    fetch('http://127.0.0.1:8000/countries')
+    fetch('http://$API_BASE_URL:8000/countries')
       .then(res => res.json())
       .then(data => {
         if (data && Array.isArray(data.countries)) {

@@ -14,7 +14,7 @@ export default function PageViewsBarChart({ yearRange = [2013, 2023], countryCod
   const fetchData = React.useCallback(async () => {
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/statistics?country_code=${countryCode}&start_year=${yearRange[0]}&end_year=${yearRange[1]}`
+        `http://$API_BASE_URL:8000/statistics?country_code=${countryCode}&start_year=${yearRange[0]}&end_year=${yearRange[1]}`
       );
       if (!res.ok) throw new Error('Failed fetch');
       const json = await res.json();

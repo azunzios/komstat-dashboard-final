@@ -72,7 +72,7 @@ export default function TahunAreaView({ stats, loading, error, country, setCount
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/countries');
+        const response = await fetch('http://$API_BASE_URL:8000/countries');
         const data = await response.json();
         setCountries(data.countries || []);
       } catch (error) {
