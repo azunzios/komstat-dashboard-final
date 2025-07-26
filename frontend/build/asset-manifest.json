@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/static/css/main.ff35f674.css",
+    "main.js": "/static/js/main.510b6aed.js",
+    "static/media/ibm-plex-sans-latin-200-normal.woff2": "/static/media/ibm-plex-sans-latin-200-normal.fd3d7e865fe328fda70a.woff2",
+    "static/media/ibm-plex-sans-latin-300-normal.woff2": "/static/media/ibm-plex-sans-latin-300-normal.79408ccee970e413b405.woff2",
+    "static/media/ibm-plex-sans-latin-600-normal.woff2": "/static/media/ibm-plex-sans-latin-600-normal.24bc59b4b4ad02d1666d.woff2",
+    "static/media/ibm-plex-sans-latin-500-normal.woff2": "/static/media/ibm-plex-sans-latin-500-normal.fcd7b8c3d12375eedc97.woff2",
+    "static/media/ibm-plex-sans-latin-200-normal.woff": "/static/media/ibm-plex-sans-latin-200-normal.3128a66feac89b0943e9.woff",
+    "static/media/ibm-plex-sans-latin-300-normal.woff": "/static/media/ibm-plex-sans-latin-300-normal.383342024cc1857eeaeb.woff",
+    "static/media/ibm-plex-sans-latin-500-normal.woff": "/static/media/ibm-plex-sans-latin-500-normal.4b130dfcfa945eac3e54.woff",
+    "static/media/ibm-plex-sans-latin-600-normal.woff": "/static/media/ibm-plex-sans-latin-600-normal.d73e2e25bcd162ae992f.woff",
+    "static/media/ibm-plex-sans-latin-700-normal.woff2": "/static/media/ibm-plex-sans-latin-700-normal.cc104bdc19efb9831e65.woff2",
+    "static/media/ibm-plex-sans-latin-400-normal.woff2": "/static/media/ibm-plex-sans-latin-400-normal.3160b5c6767eb4c69c78.woff2",
+    "static/media/ibm-plex-sans-latin-100-normal.woff2": "/static/media/ibm-plex-sans-latin-100-normal.e3ede3cea7e702bc5912.woff2",
+    "static/media/ibm-plex-sans-latin-700-normal.woff": "/static/media/ibm-plex-sans-latin-700-normal.07479b3959672b80189f.woff",
+    "static/media/ibm-plex-sans-latin-400-normal.woff": "/static/media/ibm-plex-sans-latin-400-normal.65b2eda743bf11103476.woff",
+    "static/media/ibm-plex-sans-latin-100-normal.woff": "/static/media/ibm-plex-sans-latin-100-normal.c495a2d707f9a42ba204.woff",
+    "index.html": "/index.html",
+    "main.ff35f674.css.map": "/static/css/main.ff35f674.css.map",
+    "main.510b6aed.js.map": "/static/js/main.510b6aed.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ff35f674.css",
+    "static/js/main.510b6aed.js"
+  ]
+}

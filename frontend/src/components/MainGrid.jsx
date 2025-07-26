@@ -24,6 +24,7 @@ const GAS_KEYS = [
 ];
 
 export default function MainGrid() {
+  const baseUrl = process.env.REACT_APP_API_BASE_URL;
   // State untuk UI
   const [activeComponentIndex, setActiveComponentIndex] = useState(0);
   const [showScroll, setShowScroll] = useState(false);
@@ -80,12 +81,12 @@ export default function MainGrid() {
     setError(null);
     const loadData = async () => {
       try {
-        const countriesRes = await fetch('http://$API_BASE_URL:8000/countries');
+        const countriesRes = await fetch(`${baseUrl}/countries`);
         const countriesData = await countriesRes.json();
         const countryObj = countriesData.countries.find(c => c.name === country);
         setCountryCode(countryObj ? countryObj.code : 'WLD');
 
-        const statsRes = await fetch(`http://$API_BASE_URL:8000/statistics?country_code=${countryObj ? countryObj.code : 'WLD'}&start_year=${yearRange[0]}&end_year=${yearRange[1]}`);
+        const statsRes = await fetch(`${baseUrl}/statistics?country_code=${countryObj ? countryObj.code : 'WLD'}&start_year=${yearRange[0]}&end_year=${yearRange[1]}`);
         const statsData = await statsRes.json();
         setStats(statsData);
       } catch (err) {

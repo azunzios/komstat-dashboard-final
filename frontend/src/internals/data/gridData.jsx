@@ -9,6 +9,8 @@ import {
   GlobeFlag,
 } from '../components/CustomIcons';
 
+const baseUrl = process.env.REACT_APP_API_BASE_URL;
+
 export const columns = [
   {
     field: 'countryName',
@@ -142,7 +144,7 @@ class EmissionDataManager {
     }
 
     try {
-      const codesRes = await fetch('http://localhost:8000/country-code-and-numeric.json');
+      const codesRes = await fetch(`${baseUrl}/country-code-and-numeric.json`);
       const codes = await codesRes.json();
       const countryMap = {};
       this.alpha3ToAlpha2 = {}; // Reset and populate the mapping
@@ -154,7 +156,7 @@ class EmissionDataManager {
         }
       });
 
-      const emissionsRes = await fetch('http://localhost:8000/global-complete-data.json');
+      const emissionsRes = await fetch(`${baseUrl}/global-complete-data.json`);
       const emissionsData = await emissionsRes.json();
 
       const transformed = [];

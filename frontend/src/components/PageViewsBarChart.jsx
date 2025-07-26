@@ -6,6 +6,7 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import { useTheme } from '@mui/material/styles';
 
 export default function PageViewsBarChart({ yearRange = [2013, 2023], countryCode = 'WLD' }) {
+  const baseUrl = process.env.REACT_APP_API_BASE_URL;
   const theme = useTheme();
   const [data, setData] = React.useState({ years: [], no2: [], ch4: [], n2o: [], other: [] });
 
@@ -14,7 +15,7 @@ export default function PageViewsBarChart({ yearRange = [2013, 2023], countryCod
   const fetchData = React.useCallback(async () => {
     try {
       const res = await fetch(
-        `http://$API_BASE_URL:8000/statistics?country_code=${countryCode}&start_year=${yearRange[0]}&end_year=${yearRange[1]}`
+        `${baseUrl}/statistics?country_code=${countryCode}&start_year=${yearRange[0]}&end_year=${yearRange[1]}`
       );
       if (!res.ok) throw new Error('Failed fetch');
       const json = await res.json();

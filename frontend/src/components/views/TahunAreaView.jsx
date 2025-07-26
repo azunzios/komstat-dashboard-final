@@ -49,6 +49,7 @@ function calculateGrowth(rawValues, yearRange) {
 }
 
 export default function TahunAreaView({ stats, loading, error, country, setCountry, yearRange, setYearRange, setStats, countryCode, gasKeys, isPrintMode = false }) {
+  const baseUrl = process.env.REACT_APP_API_BASE_URL;
   const [countries, setCountries] = useState([]);
   const [years] = useState(Array.from({ length: 56 }, (_, i) => 1970 + i).reverse());
   const [gasTypes] = useState([
@@ -72,7 +73,7 @@ export default function TahunAreaView({ stats, loading, error, country, setCount
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await fetch('http://$API_BASE_URL:8000/countries');
+        const response = await fetch(`${baseUrl}/countries`);
         const data = await response.json();
         setCountries(data.countries || []);
       } catch (error) {

@@ -6,13 +6,14 @@ export interface CountryItem {
 }
 
 export function useCountries() {
+  const baseUrl = process.env.REACT_APP_API_BASE_URL;
   const [countries, setCountries] = useState<CountryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setLoading(true);
-    fetch('http://$API_BASE_URL:8000/countries')
+    fetch(`${baseUrl}/countries`)
       .then(res => res.json())
       .then(data => {
         if (data && Array.isArray(data.countries)) {

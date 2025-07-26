@@ -19,6 +19,8 @@ import Tooltip from '@mui/material/Tooltip';
 import Box from '@mui/material/Box';
 import { ScatterChart } from '@mui/x-charts/ScatterChart';
 
+const baseUrl = process.env.REACT_APP_API_BASE_URL;
+
 const geoUrl = "https://unpkg.com/world-atlas@2.0.2/countries-110m.json";
 
 const MapChart = () => {
@@ -38,7 +40,7 @@ const MapChart = () => {
 
   // 1. Fetch country-code JSON sekali
   useEffect(() => {
-    fetch("http://localhost:8000/country-code-and-numeric.json")
+    fetch(`${baseUrl}/country-code-and-numeric.json`)
       .then((res) => res.json())
       .then((list) => {
         const map = list.reduce((acc, { code, alpha3 }) => {
@@ -59,7 +61,7 @@ const MapChart = () => {
     async function fetchData() {
       try {
         const res = await fetch(
-          `http://localhost:8000/map-data?year=${selectedYear}&gas_type=${selectedGas}`
+          `${baseUrl}/map-data?year=${selectedYear}&gas_type=${selectedGas}`
         );
         const result = await res.json();
         const updated = result.map((d) => ({
