@@ -19,10 +19,7 @@ import {
 } from '@mui/material';
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 
-
-
-
-const baseUrl = process.env.REACT_APP_baseUrl;
+const baseURL = process.env.REACT_APP_API_BASE_URL;
 
 const yearMarks = [
   { value: 1970, label: '1970' },
@@ -60,7 +57,7 @@ export default function YoYGrowthTrend() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`${baseUrl}/countries`);
+        const res = await fetch(`${baseURL}/countries`);
         const json = await res.json();
         setCountries(json.countries || []);
       } catch (e) {
@@ -75,7 +72,7 @@ export default function YoYGrowthTrend() {
       setLoading(true);
       try {
         const res = await fetch(
-          `${baseUrl}/statistics?country_code=${countryCode}&start_year=${startYear - 1}&end_year=${CURRENT_YEAR}`
+          `${baseURL}/statistics?country_code=${countryCode}&start_year=${startYear - 1}&end_year=${CURRENT_YEAR}`
         );
         const json = await res.json();
         if (json && json[gasType] && json[gasType].raw_values) {
@@ -112,8 +109,8 @@ export default function YoYGrowthTrend() {
       try {
         // 1. Fetch country & world data untuktahun startYear
         const [countryRes, worldRes] = await Promise.all([
-          fetch(`${baseUrl}/statistics?country_code=${countryCode}&year=${startYear}`),
-          fetch(`${baseUrl}/statistics?country_code=WLD&year=${startYear}`),
+          fetch(`${baseURL}/statistics?country_code=${countryCode}&year=${startYear}`),
+          fetch(`${baseURL}/statistics?country_code=WLD&year=${startYear}`),
         ]);
         const countryJson = await countryRes.json();
         const worldJson = await worldRes.json();
